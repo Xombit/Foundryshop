@@ -579,6 +579,35 @@ Initial fork source preflight (2026-10-10):
   are owner-test candidates, not GitHub auto-update release assets. EP8's
   physical pen and bounded live-play check remain open.
 
+Exact selection-to-layer copying (2026-10-10):
+
+- Each actual layer's actions now offers Copy selected drawings here alongside
+  Move selected drawings here, through the shared detailed/toolbox Layers UI.
+  Copies keep exact native coordinates, shape points, rotation, appearance,
+  textures/text, author, Level/elevation and per-Drawing visibility. Only IDs,
+  layer destination, native sort allocation and copy provenance change.
+  Originals stay on their existing layers and the active layer is not changed.
+  Hidden destination layers are supported for precisely aligned reveal overlaps.
+- Uses the existing verified stamp/import journal without centering, translating,
+  native geometry regeneration or grid normalization. Up to 100 Drawings per
+  copy and 10,000 per Scene; native sort space/layer order must be valid. Source
+  and inherited destination locks refuse copying. Full intact retained paths
+  receive independent recipe/component IDs with unchanged geometry. Partial or
+  damaged copies require explicit loss confirmation and become ordinary artwork;
+  original memberships/recipes stay untouched. Source changes during approval
+  refuse saving. Existing import cleanup restores partially created copies.
+- 279 targeted tests and all 1285 full-suite tests pass. Native v14 acceptance
+  used the actual toolbox destination-layer button on a hidden layer: copied
+  rotated/smoothed artwork had exact native appearance/geometry, unchanged
+  source apart from permitted sort renumbering, unchanged active layer and no
+  journal. After revealing the layer and waiting for refresh, the copy was
+  visible and its rendered bounds matched the original exactly.
+- Both new 149-file package layouts were extracted/source-validated and the
+  1.0.0-copy1 test candidate deployed with backup. The old 1.0.0 ZIP was open in
+  another process and was not replaced. Disposable QA removed; original Scene,
+  workspace, toolbox state and paused state restored. The owner approved
+  committing and pushing this tested addition to the fork; no release or tag.
+
 #### Native Walls expansion: compatible architecture now, explicit tools later
 
 The future workflow converts selected supported Drawing geometry or an editable

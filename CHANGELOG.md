@@ -28,6 +28,10 @@ built for GMs who draw maps live at the table. This first release includes:
 - Active layer, locks, duplicate, rename, move to group, keyboard reordering,
   per-layer remembered brushes, and **Repair Drawing Order**.
 - An **Unassigned** bucket for drawings that are not on any layer yet.
+- **Copy selected drawings here** in each layer's actions: exact in-place
+  duplication for seamless reveal overlaps, including hidden destinations.
+  Originals stay unchanged; complete retained paths receive independent
+  identities, with explicit partial/damaged-path editability warnings.
 
 ### Presentation
 - **Presentation presets** that snapshot which layers players can see, so a

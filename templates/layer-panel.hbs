@@ -76,6 +76,7 @@
 				<button type="button" data-action="lock" data-id="{{id}}" aria-pressed="{{locked}}" title="{{lockTitle}}"><i class="fas {{#if locked}}fa-lock-open{{else}}fa-lock{{/if}}" aria-hidden="true"></i> {{#if locked}}{{localize "FOUNDRYSHOP.Layers.Unlock"}}{{else}}{{localize "FOUNDRYSHOP.Layers.Lock"}}{{/if}}</button>
 				{{#if isLayer}}
 				<button type="button" data-action="assign" data-id="{{id}}" {{#if effectiveLocked}}disabled{{/if}}>{{localize "FOUNDRYSHOP.Layers.Assign"}}</button>
+				<button type="button" data-action="copySelected" data-id="{{id}}" {{#if effectiveLocked}}disabled{{/if}} title="{{localize "FOUNDRYSHOP.Layers.CopySelectedHint"}}"><i class="fas fa-copy" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.CopySelected"}}</button>
 				<button type="button" data-action="defaults" data-id="{{id}}" aria-pressed="{{hasDefaults}}">{{localize "FOUNDRYSHOP.Layers.Defaults"}}</button>
 				{{#if hasDefaults}}<button type="button" data-action="clearDefaults" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.ClearDefaults"}}</button>{{/if}}
 				{{/if}}

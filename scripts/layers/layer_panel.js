@@ -17,6 +17,8 @@ import {
 import { promptProjectExport, promptProjectImport, promptDiscardProjectImport } from './project_dialogs.js';
 import { createTracingTile, removeTracingTile, tracingTiles } from './tracing_tile.js';
 import { promptRetainedPathRecovery } from '../path_transactions.js';
+import { copyDrawingsToLayer } from './layer_copy.js';
+import { FoundryshopDialog } from '../dialogs.js';
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const loc = key => game.i18n.localize(`FOUNDRYSHOP.Layers.${key}`);
@@ -33,6 +35,7 @@ export class LayerPanel extends HandlebarsApplicationMixin(ApplicationV2) {
 			add: LayerPanel.onAction, activate: LayerPanel.onAction, workspace: LayerPanel.onAction,
 			present: LayerPanel.onAction, rename: LayerPanel.onAction, up: LayerPanel.onAction,
 			down: LayerPanel.onAction, assign: LayerPanel.onAction, reconcile: LayerPanel.onAction,
+			copySelected: LayerPanel.onAction,
 			defaults: LayerPanel.onAction, clearDefaults: LayerPanel.onAction,
 			addGroup: LayerPanel.onAction, collapseGroup: LayerPanel.onAction,
 			move: LayerPanel.onAction, deleteNode: LayerPanel.onAction,
@@ -420,6 +423,28 @@ export class LayerPanel extends HandlebarsApplicationMixin(ApplicationV2) {
 					const other = siblings[siblings.indexOf(node) + (up ? -1 : 1)];
 					if (!other) throw layerError('InvalidDrop');
 					await reorderLayer(scene, id, other.id, up ? 'before' : 'after', tree.revision);
+					break;
+				}
+				case 'copySelected': {
+					const ids = (canvas.drawings?.controlled ?? []).map(object => object.document.id);
+					const selection = () => (canvas.drawings?.controlled ?? []).map(object => object.document.id).sort().join(',');
+					const selected = [...ids].sort().join(',');
+					const result = await copyDrawingsToLayer(scene, ids, id, {
+						expectedRevision: tree.revision,
+						isCurrent: () => canvas.ready && canvas.scene === scene && selection() === selected,
+						approvePathLoss: warnings => {
+							const content = document.createElement('div');
+							const hint = document.createElement('p'); hint.textContent = loc('CopyPathLoss'); content.append(hint);
+							for (const warning of warnings) {
+								const p = document.createElement('p');
+								p.textContent = `${warning.name}: ${game.i18n.localize(`FOUNDRYSHOP.Paths.PortableReason.${warning.reason}`)}`;
+								content.append(p);
+							}
+							return FoundryshopDialog.confirm({ window: { title: loc('CopySelected') }, content,
+								modal: true, rejectClose: false });
+						},
+					});
+					if (result) ui.notifications.info(loc('CopiedSelected'));
 					break;
 				}
 				case 'assign': {

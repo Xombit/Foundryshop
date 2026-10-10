@@ -20,6 +20,7 @@ import { layerArtworkSnapshot } from '../scripts/artwork_renderer.js';
 import { exportDrawingProject, exportDrawingSelection, exportDrawingSubtree, prepareProjectImport, importDrawingProject } from '../scripts/layers/project_transfer_service.js';
 import { validateProjectPackage } from '../scripts/layers/project_package.js';
 import { transformPathRecipe } from '../scripts/path_portability.js';
+import { copyDrawingsToLayer } from '../scripts/layers/layer_copy.js';
 import { beginPathEdit, cancelPathEdit, getPathEditorState, selectedRetainedPath, selectPathWaypoint, setPathWaypoint,
 	deletePathWaypoint, togglePathInsertion, applyPathEdit, onPathEditorPointer, onPathEditorMove, onPathEditorUp,
 	onPathEditorKey, initPathEditor, teardownPathEditor, setPathPointMode, setPathHandle, onPathEditorBlur,
@@ -153,6 +154,72 @@ const pathEvent = (x, y, extra = {}) => ({
 
 const retainedRecipe = (style = 'plain') => createPathRecipe([{ x: 100, y: 100 }, { x: 220, y: 100 }], { style });
 const retainedTarget = () => ({ layerId: 'ink', levelId: 'ground', elevation: 0, name: 'Test route' });
+
+function copyDestination() {
+	scene.flags.foundryshop.layers.nodes.unshift({id:'reveal',name:'Reveal',kind:'layer',parentId:null,
+		locked:false,playerAllowed:false,defaults:{}});
+	workspace.scenes.dest.hiddenIds=['reveal'];
+}
+
+test('copy selected drawings to a hidden layer preserves exact native artwork and leaves originals and active layer unchanged',async()=>{
+	copyDestination();
+	const source={...base(),rotation:37,bezierFactor:0.6,hidden:true,levels:['ground'],flags:{foundryshop:{layerId:'ink'},custom:{detail:'kept'}}};
+	scene.drawings.set(source._id,new Drawing(source,{parent:scene}));
+	const before=scene.drawings.get(source._id).toObject(),active=structuredClone(workspace);
+	const plan=await copyDrawingsToLayer(scene,[source._id],'reveal',{expectedRevision:0});
+	const copy=scene.drawings.get(plan.data[0]._id).toObject();
+	const artwork=data=>{const result=structuredClone(data);delete result._id;delete result.sort;
+		delete result.flags.foundryshop.layerId;delete result.flags.foundryshop.provenance;return result;};
+	assert.deepEqual(artwork(copy),artwork(before));
+	assert.equal(copy.flags.foundryshop.layerId,'reveal');assert.notEqual(copy._id,before._id);
+	assert.deepEqual(scene.drawings.get(source._id).toObject(),before);
+	assert.deepEqual(workspace,active);assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
+});
+
+test('in-place copying preserves complete retained recipes with independent identities and discloses partial copies',async()=>{
+	copyDestination();enablePathNativeHooks();
+	const original=await createRetainedPath(scene,retainedRecipe('railway'),retainedTarget());
+	const before=original.components.map(c=>scene.drawings.get(c.drawingId).toObject());
+	await copyDrawingsToLayer(scene,original.components.map(c=>c.drawingId),'reveal');
+	const copy=readPathRegistry(scene).routes.find(r=>r.id!==original.id);
+	assert.equal(copy.layerId,'reveal');assert.deepEqual(copy.recipe,original.recipe);
+	assert.equal(inspectPathIntegrity(scene,copy.id).intact,true);
+	assert.deepEqual(original.components.map(c=>scene.drawings.get(c.drawingId).toObject()),before);
+	const selected=[original.components[0].drawingId],size=scene.drawings.size;
+	assert.equal(await copyDrawingsToLayer(scene,selected,'reveal',{approvePathLoss:async warnings=>{
+		assert.equal(warnings[0].reason,'partial');return false;}}),null);
+	assert.equal(scene.drawings.size,size);
+	const plan=await copyDrawingsToLayer(scene,selected,'reveal',{approvePathLoss:async()=>true});
+	assert.equal(scene.drawings.get(plan.data[0]._id).getFlag('foundryshop','path'),undefined);
+	assert.equal(readPathRegistry(scene).routes.length,2);
+});
+
+test('in-place copy refuses locks, invalid selections, stale review and compensates partial native creation',async()=>{
+	copyDestination();scene.drawings.set('originalDrawing',new Drawing(base(),{parent:scene}));
+	await assert.rejects(copyDrawingsToLayer(scene,[],'reveal'),/NoSelection/);
+	await assert.rejects(copyDrawingsToLayer(scene,['originalDrawing'],'reveal',{expectedRevision:9}),/Changed/);
+	scene.flags.foundryshop.layers.nodes[0].locked=true;
+	scene.flags.foundryshop.layers=structuredClone(scene.flags.foundryshop.layers);
+	await assert.rejects(copyDrawingsToLayer(scene,['originalDrawing'],'reveal'),/Locked/);
+	scene.flags.foundryshop.layers.nodes[0].locked=false;
+	scene.flags.foundryshop.layers=structuredClone(scene.flags.foundryshop.layers);
+	await assert.rejects(copyDrawingsToLayer(scene,['originalDrawing'],'reveal',{isCurrent:()=>false}),/Changed/);
+	const before=scene.drawings.get('originalDrawing').toObject();
+	scene.createEmbeddedDocuments=async(type,data)=>{
+		scene.drawings.set(data[0]._id,new Drawing(data[0],{parent:scene}));throw Error('copy interrupted');};
+	await assert.rejects(copyDrawingsToLayer(scene,['originalDrawing'],'reveal'),/copy interrupted/);
+	assert.equal(scene.drawings.size,1);assert.deepEqual(scene.drawings.get('originalDrawing').toObject(),before);
+	assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
+});
+
+test('in-place partial path approval refuses stale source edits before writing any copies',async()=>{
+	copyDestination();
+	const route=await createRetainedPath(scene,retainedRecipe('railway'),retainedTarget()),count=scene.drawings.size;
+	await assert.rejects(copyDrawingsToLayer(scene,[route.components[0].drawingId],'reveal',{
+		approvePathLoss:async()=>{scene.drawings.get(route.components[0].drawingId).data.x++;return true;},
+	}),/Changed/);
+	assert.equal(scene.drawings.size,count);assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
+});
 
 function enablePathNativeHooks() {
 	const update = scene.update, create = scene.createEmbeddedDocuments, replace = scene.updateEmbeddedDocuments,

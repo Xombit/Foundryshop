@@ -380,12 +380,28 @@ Each row's **⋯ menu** holds the less frequent actions:
 | Bring layer forward / Send layer backward | Keyboard-friendly reordering |
 | Lock Layer / Group | Prevents selecting, editing or deleting the layer's drawings (locks are inherited by children) |
 | Move selected drawings here | Reassigns the selected drawings to this layer |
+| Copy selected drawings here | Copies the selection to this layer at exactly the same coordinates, size, rotation and appearance; originals and active layer stay unchanged |
 | Remember current brush | Saves the current brush as this layer's default, so activating the layer loads it (can be cleared again from the same menu) |
 | Move to Group | Moves the row into another group |
 | Remove Layer / Group | Removes the row and everything inside it. Choose a layer to move its drawings to, or tick *Delete its artwork too* (locked artwork blocks deletion) |
 
 Groups additionally offer **Add layer / Add subgroup inside**, and
 **Show all / Hide all** for both GM view and Players.
+
+To make a seamless entrance overlap for a reveal, select the shared doorway or
+middle-piece Drawings, then open the destination layer's **⋯ menu -> Copy selected
+drawings here**. The copies stay precisely on top of their originals—even when
+the destination layer is hidden—so revealing it does not introduce an offset.
+The destination's layer visibility/presentation still governs the copies.
+Native per-Drawing hidden state, Level and elevation are preserved.
+
+Copy up to 100 Drawings at a time. Locked source artwork/layers or destinations
+refuse copying. Complete retained paths become independently editable copies;
+partial or damaged paths require confirmation and copy as ordinary artwork,
+without changing the originals. Copy uses verified staging/recovery and may
+adjust native sort values to respect layer order. Like path-bearing stamp imports,
+it clears committed Path history when retained paths are present; unfinished
+copies use the existing Layers import-recovery control.
 
 ### Presentation panel
 
