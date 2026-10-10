@@ -1,9 +1,12 @@
+import { pixelRegion } from './pixel_region.js';
+
 export class Color_Selector {
 	static _template = null;
-	static _template_path = 'modules/boneyard-drawing-tools/templates/color-selector.hbs';
+	static _template_path = 'modules/foundryshop/templates/color-selector.hbs';
 
 	static async loadTemplate() {
 		const response = await fetch(Color_Selector._template_path);
+		if (!response.ok) throw new Error(`Could not load color selector template: HTTP ${response.status}`);
 		const data = await response.text();
 		Color_Selector._template = Handlebars.compile(data);
 	}
@@ -87,37 +90,37 @@ export class Color_Selector {
 			blue: this.options.color.slice(5, 7),
 		};
 		parent_element.innerHTML = Color_Selector._template(data);
-		this._element = parent_element.querySelector('#by-color-selector');
-		this.canvas = this._element.querySelector('#by-color-picker-canvas');
+		this._element = parent_element.querySelector('#fshop-color-selector');
+		this.canvas = this._element.querySelector('#fshop-color-picker-canvas');
 		this.canvas_context = this.canvas.getContext('2d', {
 			willReadFrequently: true,
 		});
-		this.canvas_marker = this._element.querySelector('#by-color-picker-marker');
-		this.canvas_marker_outline = this._element.querySelector('#by-color-picker-marker-outline');
-		this.hue_sidebar = this._element.querySelector('#by-hue-siderbar');
+		this.canvas_marker = this._element.querySelector('#fshop-color-picker-marker');
+		this.canvas_marker_outline = this._element.querySelector('#fshop-color-picker-marker-outline');
+		this.hue_sidebar = this._element.querySelector('#fshop-hue-siderbar');
 		this.hue_sidebar_context = this.hue_sidebar.getContext('2d', {
 			willReadFrequently: true,
 		});
-		this.hue_marker = this._element.querySelector('#by-hue-sidebar-marker');
-		this.hue_marker_container = this._element.querySelector('#by-hue-siderbar-marker-container');
+		this.hue_marker = this._element.querySelector('#fshop-hue-sidebar-marker');
+		this.hue_marker_container = this._element.querySelector('#fshop-hue-siderbar-marker-container');
 		this.initialize_hue_sidebar();
-		this.red_input = this._element.querySelector('#by-red-text');
-		this.green_input = this._element.querySelector('#by-green-text');
-		this.blue_input = this._element.querySelector('#by-blue-text');
+		this.red_input = this._element.querySelector('#fshop-red-text');
+		this.green_input = this._element.querySelector('#fshop-green-text');
+		this.blue_input = this._element.querySelector('#fshop-blue-text');
 		this.change_canvas_gradients(this.options.color);
 		this.update_canvas(this.options.color);
-		this.dropper_button = this._element.querySelector('#by-dropper-button');
-		this.random_button = this._element.querySelector('#by-random-button');
+		this.dropper_button = this._element.querySelector('#fshop-dropper-button');
+		this.random_button = this._element.querySelector('#fshop-random-button');
 		this.initialize_dropper();
-		this.preset_swatches = this._element.querySelector('#by-preset-swatches-container');
-		this.recent_swatches = this._element.querySelector('#by-recent-swatches-container');
+		this.preset_swatches = this._element.querySelector('#fshop-preset-swatches-container');
+		this.recent_swatches = this._element.querySelector('#fshop-recent-swatches-container');
 		this.initialize_swatches();
 	}
 
 	initialize_swatches() {
 		const swatches_template = `
 			{{#each colors}}
-				<button class="by-swatch" type="button" style="background: {{this}};"></button>
+				<button class="fshop-swatch" type="button" style="background: {{this}};"></button>
 			{{/each}}
 		`;
 		this.preset_swatches.innerHTML = Handlebars.compile(swatches_template)({
@@ -171,18 +174,19 @@ export class Color_Selector {
 
 	activate_listeners(parentElement, color_update_listener) {
 		this.canvas_mousemove_wrapper = this.canvas_mousemove_handler.bind(this);
-		this._element.querySelector('#by-color-picker-canvas')
+		this._element.querySelector('#fshop-color-picker-canvas')
 			.addEventListener('mousedown', (e) => this.canvas_mousedown_handler(e));
-		this._element.querySelector('#by-color-picker-canvas')
+		this._element.querySelector('#fshop-color-picker-canvas')
 			.addEventListener('click', (e) => this.canvas_click_handler(e));
 
 		this.hue_mousemove_wrapper = this.hue_mousemove_handler.bind(this);
-		this._element.querySelector('#by-hue-siderbar-marker-container')
+		this._element.querySelector('#fshop-hue-siderbar-marker-container')
 			.addEventListener('mousedown', (e) => this.hue_mousedown_handler(e));
-		this._element.querySelector('#by-hue-siderbar-marker-container')
+		this._element.querySelector('#fshop-hue-siderbar-marker-container')
 			.addEventListener('click', (e) => this.hue_click_handler(e));
 
-		document.addEventListener('mouseup', (e) => this.mouseup_handler(e));
+		this.mouseup_wrapper = this.mouseup_handler.bind(this);
+		document.addEventListener('mouseup', this.mouseup_wrapper);
 
 		this.red_input.addEventListener('input', (e) => this.rgb_input_handler(e));
 		this.green_input.addEventListener('input', (e) => this.rgb_input_handler(e));
@@ -201,6 +205,15 @@ export class Color_Selector {
 		this.color_update_listener = color_update_listener;
 	}
 
+	dispose() {
+		this.cancel_dropper?.();
+		if (this.mouseup_wrapper) document.removeEventListener('mouseup', this.mouseup_wrapper);
+		if (this.canvas_mousemove_wrapper) document.removeEventListener('mousemove', this.canvas_mousemove_wrapper);
+		if (this.hue_mousemove_wrapper) document.removeEventListener('mousemove', this.hue_mousemove_wrapper);
+		this.down = false;
+		this.color_update_listener = null;
+	}
+
 	swatch_button_handler(e) {
 		const fragments = e.target.style.background.split('(')[1].split(')')[0].split(',');
 		const red = parseInt(fragments[0].trim()).toString(16).padStart(2, '0');
@@ -212,15 +225,11 @@ export class Color_Selector {
 	initialize_dropper() {
 		this.offset = Math.floor(this.options.dropper_read_size / 2);
 		let pixel_id_list = [...Array(this.options.dropper_read_size * this.options.dropper_read_size).keys()];
-		const ls = [];
-		for (let i = 0; i < this.options.dropper_read_size; i++)
-			ls.push(pixel_id_list.slice(i * this.options.dropper_read_size, (i + 1) * this.options.dropper_read_size));
-		this.pixel_ids = ls.reverse().flat();
-		this.pixels = new Uint8Array(this.options.dropper_read_size * this.options.dropper_read_size * 4);
+		this.pixel_ids = pixel_id_list;
 		this.dropper_preview_template = `
-			<div class="by-circle" id="by-dropper-preview" style="width: {{width}}; height: {{height}}; grid-template-columns: repeat({{p_count}}, 1fr);">
+			<div class="fshop-circle" id="fshop-dropper-preview" style="width: {{width}}; height: {{height}}; grid-template-columns: repeat({{p_count}}, 1fr);">
 				{{#each p_ids}}
-					<div id="by-pixel-{{this}}" style="background-color: #000000;"></div>
+					<div id="fshop-pixel-{{this}}" style="background-color: #000000;"></div>
 				{{/each}}
 			</div>
 		`;
@@ -241,31 +250,24 @@ export class Color_Selector {
 	 * @returns {Uint8Array|Uint8ClampedArray} RGBA pixel data
 	 */
 	_readCanvasPixels(screenX, screenY, size) {
+		if (!canvas.ready) throw new Error(game.i18n.localize('FOUNDRYSHOP.CanvasUnavailable'));
 		const renderer = canvas.app.renderer;
-		const stage = canvas.stage;
-
-		// Convert screen coordinates to canvas world coordinates
-		const transform = stage.worldTransform;
-		const worldX = (screenX - transform.tx) / transform.a;
-		const worldY = (screenY - transform.ty) / transform.d;
-
-		// Create a temporary render texture for the region we want to sample
-		const renderTexture = PIXI.RenderTexture.create({ width: size, height: size });
-
-		// Set up a temporary transform to render the region we want
-		const tempMatrix = new PIXI.Matrix();
-		tempMatrix.translate(-worldX + Math.floor(size / 2), -worldY + Math.floor(size / 2));
-		tempMatrix.scale(transform.a, transform.d);
-
-		renderer.render(stage, { renderTexture, transform: tempMatrix });
-
-		const pixels = renderer.extract.pixels(renderTexture);
-		renderTexture.destroy(true);
-
+		const region = pixelRegion(screenX, screenY, size, renderer.view.getBoundingClientRect(),
+			renderer.width, renderer.height, renderer.resolution);
+		// Refresh the screen framebuffer before reading it; the context need not preserve it between frames.
+		canvas.app.render();
+		const pixels = renderer.extract.pixels(undefined,
+			new PIXI.Rectangle(region.x, region.y, region.width, region.height));
+		if (pixels.length !== size * size * 4) throw new Error('Unexpected canvas pixel data length.');
 		return pixels;
 	}
 
 	dropper_button_handler(e) {
+		this.cancel_dropper?.();
+		if (!canvas.ready) {
+			ui.notifications.warn(game.i18n.localize('FOUNDRYSHOP.CanvasUnavailable'));
+			return;
+		}
 		const element_template = document.createElement('template');
 		element_template.innerHTML = Handlebars.compile(this.dropper_preview_template)({
 			p_ids: this.pixel_ids,
@@ -276,30 +278,49 @@ export class Color_Selector {
 		this.dropper = element_template.content.firstChild;
 		document.body.appendChild(this.dropper);
 
+		const report_sampling_error = (error) => {
+			exit_dropper_mode();
+			console.error('Foundryshop eyedropper:', error);
+			ui.notifications.error(game.i18n.format('FOUNDRYSHOP.Error', { message: error.message }));
+		};
 		const document_pointerdown_handler = (e) => {
-			if (e.target.id === 'board' && e.target.nodeName === 'CANVAS' && e.button === 0) {
-				const pixelData = this._readCanvasPixels(e.clientX, e.clientY, 1);
-				this.update_html_colors(
-					Color_Selector.color_vec_to_str([pixelData[0], pixelData[1], pixelData[2]]),
-					'dropper'
-				);
-			}
 			e.preventDefault();
 			e.stopImmediatePropagation();
-			exit_dropper_mode();
+			try {
+				if (e.target === canvas.app.renderer.view && e.button === 0) {
+					const pixelData = this._readCanvasPixels(e.clientX, e.clientY, 1);
+					this.update_html_colors(
+						Color_Selector.color_vec_to_str([pixelData[0], pixelData[1], pixelData[2]]),
+						'dropper'
+					);
+				}
+			} catch (error) {
+				report_sampling_error(error);
+			} finally {
+				exit_dropper_mode();
+			}
 		};
 
+		let preview_frame = null;
+		let preview_position = null;
 		const document_mousemove_handler = (e) => {
 			this.mouse_pos.x = e.clientX;
 			this.mouse_pos.y = e.clientY;
 			this.move_dropper(e.clientX, e.clientY);
-			if (e.target.id === 'board' && e.target.nodeName === 'CANVAS') {
-				const pixelData = this._readCanvasPixels(e.clientX, e.clientY, this.options.dropper_read_size);
-				this.pixel_ids.forEach((p) => {
-					if (this.dropper) {
-						const idx = p * 4;
-						this.dropper.querySelector(`#by-pixel-${p}`).style['background-color'] =
-							Color_Selector.color_vec_to_str([pixelData[idx], pixelData[idx + 1], pixelData[idx + 2]]);
+			if (e.target === canvas.app.renderer.view) {
+				preview_position = { x: e.clientX, y: e.clientY };
+				if (preview_frame === null) preview_frame = requestAnimationFrame(() => {
+					preview_frame = null;
+					try {
+						const pixelData = this._readCanvasPixels(preview_position.x, preview_position.y,
+							this.options.dropper_read_size);
+						for (const p of this.pixel_ids) {
+							const idx = p * 4;
+							this.dropper.querySelector(`#fshop-pixel-${p}`).style.backgroundColor =
+								Color_Selector.color_vec_to_str([pixelData[idx], pixelData[idx + 1], pixelData[idx + 2]]);
+						}
+					} catch (error) {
+						report_sampling_error(error);
 					}
 				});
 			}
@@ -313,19 +334,25 @@ export class Color_Selector {
 		};
 
 		const exit_dropper_mode = () => {
+			if (preview_frame !== null) cancelAnimationFrame(preview_frame);
+			preview_frame = null;
 			document.removeEventListener('pointerdown', document_pointerdown_handler, { capture: true });
 			document.removeEventListener('mousemove', document_mousemove_handler, { capture: true });
 			document.removeEventListener('keydown', document_keydown_handler, { capture: true });
-			this.dropper.remove();
+			Hooks.off('canvasTearDown', teardown_hook);
+			this.dropper?.remove();
 			this.dropper = null;
+			this.cancel_dropper = null;
 		};
+		const teardown_hook = Hooks.on('canvasTearDown', exit_dropper_mode);
+		this.cancel_dropper = exit_dropper_mode;
 
 		const hovered_ele = document.elementFromPoint(this.mouse_pos.x, this.mouse_pos.y);
-		if (hovered_ele.id === 'board' && hovered_ele.nodeName === 'CANVAS') {
+		if (hovered_ele === canvas.app.renderer.view) {
 			document_mousemove_handler({
 				clientX: this.mouse_pos.x,
 				clientY: this.mouse_pos.y,
-				target: { id: 'board', nodeName: 'CANVAS' },
+				target: hovered_ele,
 				stopImmediatePropagation: () => {},
 			});
 		} else {
@@ -445,4 +472,3 @@ export class Color_Selector {
 		this.change_canvas_gradients(Color_Selector.color_vec_to_str(Color_Selector.hsv_vec_to_rgb([hsv[0], 1, 1])));
 	}
 }
-

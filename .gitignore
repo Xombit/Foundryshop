@@ -6,3 +6,11 @@ CLAUDE.md
 .claude/
 
 ai_docs
+
+# Local testing packages
+dist/
+packages/
+node_modules/
+# Local scene exports and test data
+fvtt-Scene-*.json
+*.foundryshop.json

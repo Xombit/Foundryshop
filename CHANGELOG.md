@@ -1,32 +1,74 @@
-## 3.0.0
+# Changelog
 
-- **Breaking:** Requires Foundry VTT v13.
-- Migrated to ApplicationV2 (`HandlebarsApplicationMixin`). The panel is now a standard Foundry window — draggable, with native title bar and close button.
-- Replaced custom keyboard shortcut system with Foundry's built-in `game.keybindings` API. Shortcuts are now configured through Foundry's Configure Controls menu.
-- Replaced direct WebGL `readPixels` dropper with PIXI renderer extract API.
-- Updated `getSceneControlButtons` hook for v13's object-keyed controls format.
-- Updated `DrawingsLayer` references to `foundry.canvas.layers.DrawingsLayer`.
-- Color values from drawing defaults are now normalized to handle `Color` objects.
-- Settings changes are applied in real-time (no need to close the panel).
-- Window position is remembered between opens.
-- Toolbar tooltip shows the current keyboard shortcut.
-- Removed jQuery usage throughout.
-- Removed unused `vector_math.js`.
-- Fixed duplicate preset color swatches setting registration.
-- Fixed dropper preview size setting type (was `String`, now `Number`).
+## 1.0.0 — Initial release
 
-## 2.0.9
-- Updating GitHub workflows to properly link a url for the license and readme of the release.
+Foundryshop is a Photoshop-style drawing and layers toolbox for Foundry VTT v14,
+built for GMs who draw maps live at the table. This first release includes:
 
-## 2.0.8
-- Updating GitHub workflows to fix bug with version field not being set in the module.json file.
+> **Requires [Precise Drawing Tools](https://github.com/shemetz/precise-drawing-tools)**
+> for high-resolution drawing. Foundry installs it automatically with Foundryshop.
 
-## 2.0.7
+### Drawing Toolbox
+- Floating, draggable toolbox with a **tool rail** (select, rectangle, ellipse,
+  polygon, freehand, path, label, stamp and a quick-layer flyout). Native Text
+  is available in the Labels workspace and Foundry's drawing controls.
+- **Brush bar**: stroke/fill targets, swap, no-fill toggle, saved **brush
+  presets**, a width slider with one-tap sizes, line and fill opacity, and
+  recent colors.
+- **Selection bar** for editing, applying or clearing label text and copying
+  the selection to a stamp.
+- Grouped panels — **Style**, **Color**, **Layers**, **Assets** — plus a
+  Settings panel behind the ⚙ button, a collapsed mode, and remembered
+  position and panel.
+- Slate, Foundry and system themes, compact/comfortable/tablet sizes, and UI scale.
 
-- Improved fix for panel closing when clicking a button. (#4)
-   - Still a workaround, but all original module functionality should be restored now.
+### Layers
+- Nested **layers and groups** stored per Scene, ordered top to bottom.
+- Separate **GM view** and **Players** visibility, inherited by groups.
+- Active layer, locks, duplicate, rename, move to group, keyboard reordering,
+  per-layer remembered brushes, and **Repair Drawing Order**.
+- An **Unassigned** bucket for drawings that are not on any layer yet.
 
-## 2.0.6
+### Presentation
+- **Presentation presets** that snapshot which layers players can see, so a
+  reveal is a single click.
 
-- Fix for drawing config panel closing when clicking a button while the active game system is pf2e.
-   - This is likely a temporary fix, as it doesn't fix the issue of receiving two `focusout` events, but does check if they were emitted with a non-null `sourceCapabilities` to check if an actual hardware item generated the event - i.e., the mouse.
+### Color
+- Named palettes (built-in and world-shared), paired stroke+fill swatches,
+  and an advanced color selector with an on-canvas eyedropper, preset swatches
+  and recent colors.
+
+### Assets
+- Waypoint paths with plain, railway, road and river styles, adjustable smooth
+  curves or straight segments, live previews, grid-square widths and railway
+  sleepers spaced along the curve.
+- Optional seeded natural meanders for every path style, with grid-square
+  amplitude/bend spacing and fixed waypoint anchors. Plain lines support thin
+  strokes as well as wide routes.
+- Editable retained paths backed by Scene recipes and native Drawing components:
+  numbered waypoints, Automatic/Smooth/Corner handles, exact non-meandering
+  curve insertion, closed loops, draft appearance/variation controls and presets.
+- Whole-path move, independent duplicate, confirmed delete/detach and separate
+  bounded draft/committed Path Undo/Redo. Verified native transactions and
+  reload-safe recovery preserve recipes and artwork together.
+- Complete path portability through JSON projects, copied stamps and saved
+  shapes, including rotation/scale and identity remapping. Partial/damaged
+  export warnings and explicit conflict review preserve current artwork without
+  silently overwriting edits or rebuilding missing components.
+- Six original Mining stamps: empty/loaded minecarts, ore pile, timber support,
+  railway buffer stop and pickaxe.
+- Fifteen original seamless **materials** for textured fills.
+- **Stamps** and a searchable **Library** of starter shapes, saved shapes and
+  saved projects, with WEBP artwork and SVG vector export.
+- **Map labels** with starter label styles.
+
+### Tracing and projects
+- **Tracing reference**: turn a sketch layer into a translucent Tile to draw over.
+- **Project export and import** (`.foundryshop.json`) that carries layers,
+  drawings and their assets between Scenes and Worlds, including two example
+  projects.
+
+### Credits
+Foundryshop began from [Boneyard Drawing Tools](https://github.com/operation404/boneyard-drawing-tools)
+by Lich (operation404), MIT licensed. The development history from that
+starting point is kept in [docs/CHANGELOG-history.md](docs/CHANGELOG-history.md).

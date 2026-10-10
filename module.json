@@ -1,24 +1,34 @@
 {
-  "id": "boneyard-drawing-tools",
-  "title": "Boneyard Drawing Tools",
-  "description": "Utilities and tools for Drawings.",
+  "id": "foundryshop",
+  "title": "Foundryshop",
+  "description": "A Photoshop-style drawing and layers toolbox for GMs: a floating tool palette with brush presets, nested layers and groups with GM/player visibility, presentation presets, textured materials, stamps, map labels, tracing references, project export/import, and an advanced color picker. Originally based on Boneyard Drawing Tools by Lich (operation404), MIT licensed.",
   "version": "#{VERSION}#",
   "library": false,
   "manifestPlusVersion": "1.2.0",
   "compatibility": {
-    "minimum": 13,
-    "verified": 13
+    "minimum": 14,
+    "verified": "14.365"
   },
   "authors": [
     {
-      "name": "Lich",
-      "url": "https://github.com/operation404",
-      "discord": "operation404#8123"
+      "name": "Xombit",
+      "url": "https://github.com/Xombit"
+    },
+    {
+      "name": "Lich (original Boneyard Drawing Tools)",
+      "url": "https://github.com/operation404"
     }
   ],
   "relationships": {
     "systems": [],
-    "requires": []
+    "requires": [
+      {
+        "id": "precise-drawing-tools",
+        "type": "module",
+        "manifest": "https://github.com/shemetz/precise-drawing-tools/releases/latest/download/module.json",
+        "reason": "Foundryshop relies on Precise Drawing Tools for high-resolution drawing; without it, drawn artwork is noticeably lower quality."
+      }
+    ]
   },
   "esmodules": [
     "setup.js"
@@ -26,7 +36,9 @@
   "scripts": [],
   "styles": [
     "styles/module.css",
-    "styles/color_selector.css"
+    "styles/color_selector.css",
+    "styles/toolbox.css",
+    "styles/layers.css"
   ],
   "languages": [
     {
@@ -36,6 +48,8 @@
     }
   ],
   "url": "#{URL}#",
+  "bugs": "https://github.com/Xombit/foundryshop/issues",
+  "changelog": "#{CHANGELOG}#",
   "manifest": "#{MANIFEST}#",
   "download": "#{DOWNLOAD}#",
   "license": "#{LICENSE}#",

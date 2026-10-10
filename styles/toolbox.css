@@ -1,0 +1,963 @@
+/* Drawing Toolbox: floating, pen-friendly controls shown while the Drawings layer is active. */
+.fshop-path-controls { border-top: 1px solid var(--color-border); padding-top: 8px; margin-top: 8px; }
+.fshop-path-controls .fshop-tb-row { flex-wrap: wrap; }
+.fshop-path-controls input { width: 90px; }
+#foundryshop-toolbox .fshop-path-appearance summary {
+  min-height: var(--by-tb-size);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+#foundryshop-toolbox .fshop-path-controls input[type="checkbox"] { width: auto; }
+#foundryshop-toolbox .fshop-path-controls input:not([type="checkbox"]) { min-height: var(--by-tb-size); }
+#foundryshop-toolbox .fshop-path-coordinates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--by-tb-gap);
+}
+#foundryshop-toolbox .fshop-path-coordinates input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  min-height: var(--by-tb-size);
+}
+#foundryshop-toolbox .fshop-path-controls select { width: auto; flex: 1; min-width: 140px; }
+.application.fshop-dialog {
+  max-height: calc(100dvh - 32px);
+  max-width: calc(100vw - 32px);
+}
+.fshop-dialog .window-content,
+.fshop-dialog .window-content > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.fshop-dialog .dialog-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: calc(100dvh - 160px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+.fshop-dialog .form-footer,
+.fshop-dialog .dialog-buttons { flex: 0 0 auto; }
+.fshop-library-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.fshop-library-card {
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+.fshop-library-card[hidden] { display: none; }
+.fshop-library-card > img {
+  display: block;
+  width: 100%;
+  height: 96px;
+  object-fit: contain;
+  background: #fff;
+}
+.fshop-library-card > img[hidden] { display: none; }
+.fshop-library-card > strong,
+.fshop-library-card > small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.fshop-library-card .fshop-tb-row { flex-wrap: wrap; }
+.fshop-library-actions { flex-wrap: wrap; }
+.fshop-library > input { width: 100%; }
+.foundryshop-library-management input[type="text"],
+.foundryshop-library-management .form-footer button { min-height: 44px; }
+.foundryshop-library-management .dialog-content label {
+	display: grid;
+	gap: 4px;
+	margin-block: 8px;
+}
+.foundryshop-library-management .dialog-content p { overflow-wrap: anywhere; }
+.foundryshop-publication .dialog-content label {
+	display: grid;
+	grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr);
+	gap: 8px;
+	align-items: center;
+	margin-block: 8px;
+}
+.foundryshop-publication input:not([type="checkbox"]),
+.foundryshop-publication select,
+.foundryshop-publication .form-footer button { min-height: 44px; }
+.foundryshop-publication .dialog-content label[data-publication-consent] {
+	grid-template-columns: 24px minmax(0, 1fr);
+	min-height: 44px;
+	cursor: pointer;
+}
+.foundryshop-project-exchange select,
+.foundryshop-project-exchange input:not([type="checkbox"]),
+.foundryshop-project-exchange textarea,
+.foundryshop-project-exchange .form-footer button { min-height: 44px; }
+.foundryshop-project-exchange .dialog-content label {
+	display: block;
+	min-height: 44px;
+	margin-block: 8px;
+}
+.fshop-starter-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  background: #fff;
+  color: #302b26;
+}
+.fshop-starter-preview img { width: 96px; height: 96px; object-fit: contain; }
+#foundryshop-toolbox[data-toolbox-theme="slate"] {
+  --fshop-surface: #303640;
+  --fshop-inset: #252b34;
+  --fshop-control: #414954;
+  --fshop-hover: #515d6b;
+  --fshop-border: #626d7a;
+  --fshop-text: #edf1f5;
+  --fshop-accent: #a7c4e5;
+  --color-border: var(--fshop-border);
+  --color-text-primary: var(--fshop-text);
+  --color-text-secondary: #c0cad6;
+  --color-text-emphatic: #fff;
+  --color-warm-1: var(--fshop-accent);
+  --color-warm-2: #c8dff6;
+  --color-warm-3: #4b6078;
+  --background-color: var(--fshop-surface);
+  --button-background-color: var(--fshop-control);
+  --button-hover-background-color: var(--fshop-hover);
+  --button-border-color: var(--fshop-border);
+  --button-text-color: var(--fshop-text);
+  --input-background-color: var(--fshop-inset);
+  --input-text-color: var(--fshop-text);
+  --input-border-color: var(--fshop-border);
+  color: var(--fshop-text);
+  background: rgba(37, 43, 52, 0.94);
+  border: 1px solid #71809499;
+  border-radius: 6px;
+  box-shadow: 0 12px 36px #0008, inset 0 1px #ffffff16;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .window-header {
+  background: linear-gradient(180deg, #59657570, #303944b3);
+  color: var(--fshop-text);
+  border-bottom: 1px solid #71809488;
+  backdrop-filter: blur(12px);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .window-title {
+  font-family: var(--font-primary, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .window-content {
+  color: var(--fshop-text);
+  background: var(--fshop-surface);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] button:not(.fshop-tb-swatch):not(.fshop-tb-chip) {
+  color: var(--fshop-text);
+  background: linear-gradient(180deg, #4a535f, var(--fshop-control));
+  border: 1px solid var(--fshop-border);
+  border-radius: 3px;
+  box-shadow: inset 0 1px #ffffff0d;
+  text-shadow: none;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] button:not(.fshop-tb-swatch):not(.fshop-tb-chip):hover {
+  background: var(--fshop-hover);
+  border-color: var(--fshop-accent);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] button[aria-pressed="true"]:not(.fshop-tb-swatch):not(.fshop-tb-chip),
+#foundryshop-toolbox[data-toolbox-theme="slate"] button[aria-selected="true"] {
+  background: #283647;
+  border-color: var(--fshop-accent);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] button:disabled { opacity: 0.5; }
+#foundryshop-toolbox[data-toolbox-theme="slate"] :is(button, input, select, summary):focus-visible {
+  outline: 2px solid var(--fshop-accent);
+  outline-offset: 2px;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] :is(input:not([type="range"]):not([type="checkbox"]), select, textarea) {
+  background: var(--fshop-inset);
+  border: 1px solid var(--fshop-border);
+  color: var(--fshop-text);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] input[type="range"],
+#foundryshop-toolbox[data-toolbox-theme="slate"] input[type="checkbox"] { accent-color: var(--fshop-accent); }
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] :is(h2, h3, h4, legend, label) {
+  color: inherit;
+  font-family: inherit;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-layer-flyout {
+  background: #303640;
+  color: var(--fshop-text);
+  border-color: var(--fshop-border);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-flyout-row {
+  border-bottom: 1px solid #ffffff12;
+  margin-bottom: 0;
+  padding: 3px 0;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-layer-flyout button {
+  background: transparent !important;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-layer-flyout button:hover {
+  background: #ffffff12 !important;
+  border-color: var(--fshop-border);
+}
+
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-flyout-row button[aria-pressed="true"] { outline: none; }
+#foundryshop-toolbox[data-toolbox-theme="slate"] .fshop-tb-flyout-active { background: #4b6078; }
+
+@media (prefers-reduced-transparency: reduce) {
+  #foundryshop-toolbox[data-toolbox-theme="slate"] { background: #252b34; }
+  #foundryshop-toolbox[data-toolbox-theme="slate"] .window-header { background: #39434f; backdrop-filter: none; }
+}
+
+@media (forced-colors: active) {
+  #foundryshop-toolbox[data-toolbox-theme="slate"] :is(button, input, select, .fshop-tb-layer-flyout) {
+    border: 1px solid ButtonText;
+  }
+}
+#foundryshop-toolbox {
+  --fshop-scale: 1;
+  --by-tb-size: 44px;
+  --by-tb-gap: 6px;
+  --by-tb-font: var(--font-size-14, 14px);
+  min-width: 0;
+  max-width: min(680px, calc(95vw / var(--fshop-scale)));
+}
+
+#foundryshop-toolbox .window-content {
+  padding: 6px;
+  overflow: hidden;
+  max-height: calc(90vh / var(--fshop-scale));
+}
+
+#foundryshop-toolbox .fshop-tb-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: var(--by-tb-size);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#foundryshop-toolbox .fshop-tb-tabs [aria-selected="true"] {
+  outline: 2px solid var(--color-warm-1, #ff6400);
+  outline-offset: -2px;
+}
+
+#foundryshop-toolbox .fshop-tb-subtabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+  padding: 2px;
+  border-radius: 6px;
+  background: rgba(128, 128, 128, 0.2);
+}
+
+#foundryshop-toolbox .fshop-tb-subtab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: calc(var(--by-tb-size) * 0.8);
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+
+#foundryshop-toolbox .fshop-tb-subtab[aria-pressed="true"] {
+  background: var(--color-warm-2, rgba(255, 100, 0, 0.35));
+  color: var(--color-light-1, #fff);
+}
+
+#foundryshop-toolbox .fshop-tb-panel-title {
+  margin: 0 0 6px;
+  font-size: 1em;
+  border: none;
+}
+
+#foundryshop-toolbox .fshop-tb-body {
+  overflow: auto;
+  max-height: calc(45vh / var(--fshop-scale));
+  min-height: 0;
+}
+
+.fshop-picker-only #fshop-tool-container,
+.fshop-picker-only #fshop-saved-colors {
+  display: none;
+}
+
+#foundryshop-toolbox .fshop-tb-layer-body .fshop-layer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#foundryshop-toolbox .fshop-layer-stack {
+  max-height: none;
+  overflow: visible;
+}
+
+#foundryshop-toolbox .fshop-tb-help {
+  align-self: flex-end;
+  max-width: 100%;
+}
+
+#foundryshop-toolbox .fshop-tb-help[open] {
+  align-self: stretch;
+}
+
+#foundryshop-toolbox .fshop-tb-help-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 28px;
+  padding: 0 6px;
+  font-size: 0.85em;
+  opacity: 0.75;
+  cursor: help;
+  list-style: none;
+}
+
+#foundryshop-toolbox .fshop-tb-help-toggle::-webkit-details-marker {
+  display: none;
+}
+
+#foundryshop-toolbox .fshop-tb-help-toggle:hover,
+#foundryshop-toolbox .fshop-tb-help[open] .fshop-tb-help-toggle {
+  opacity: 1;
+}
+
+#foundryshop-toolbox .fshop-tb-tablet .fshop-tb-help-toggle {
+  min-height: var(--by-tb-size);
+}
+
+#foundryshop-toolbox .fshop-tb-help > .fshop-tb-hint {
+  margin: 4px 0 0;
+}
+
+#foundryshop-toolbox .fshop-layer-toolbar > strong {
+  flex: 1 1 calc(100% - 100px);
+}
+
+#foundryshop-toolbox .fshop-layer-toolbar > .fshop-tb-help {
+  align-self: center;
+  flex: 0 0 auto;
+}
+
+#foundryshop-toolbox .fshop-layer-toolbar > .fshop-tb-help[open] {
+  flex: 1 1 100%;
+  order: 1;
+}
+
+#foundryshop-toolbox .fshop-layer-headings {
+  grid-template-columns: var(--by-tb-size) var(--by-tb-size) 1fr;
+}
+
+#foundryshop-toolbox .fshop-layer-row {
+  grid-template-columns: var(--by-tb-size) var(--by-tb-size) minmax(0, 1fr) 16px var(--by-tb-size);
+  gap: 4px;
+}
+
+#foundryshop-toolbox .fshop-layer-options {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  #foundryshop-toolbox .fshop-layer-row {
+    grid-template-columns: 44px 44px minmax(90px, 1fr) 16px 44px;
+  }
+}
+
+#foundryshop-toolbox .fshop-layer-panel button {
+  min-height: var(--by-tb-size);
+  min-width: var(--by-tb-size);
+}
+
+#foundryshop-toolbox .fshop-tb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--by-tb-gap);
+  font-size: var(--by-tb-font);
+  touch-action: manipulation;
+  user-select: none;
+  max-height: calc((100vh - 110px) / var(--fshop-scale));
+  min-height: 0;
+  width: calc(9 * var(--by-tb-size) + 8 * var(--by-tb-gap));
+  max-width: calc(95vw / var(--fshop-scale) - 14px);
+}
+
+#foundryshop-toolbox .fshop-tb > .fshop-tb-tools,
+#foundryshop-toolbox .fshop-tb > .fshop-tb-quick,
+#foundryshop-toolbox .fshop-tb > .fshop-tb-tabs {
+  flex-shrink: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-layer-flyout {
+  position: absolute;
+  z-index: 2;
+  width: min(360px, calc((100vw - 16px) / var(--fshop-scale)));
+  max-height: calc((100vh - 16px) / var(--fshop-scale));
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border: 1px solid var(--color-border, #888);
+  border-radius: 4px;
+  background: var(--background-color, rgba(20, 20, 20, 0.9));
+  box-shadow: 0 8px 24px #0008;
+}
+
+#foundryshop-toolbox[data-layer-flyout="true"],
+#foundryshop-toolbox[data-layer-flyout="true"] .window-content { overflow: visible; }
+
+#foundryshop-toolbox .fshop-tb-flyout-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border, #888);
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-stack {
+  max-height: min(calc(6 * (var(--by-tb-size) + var(--by-tb-gap))), max(44px, calc((100vh - 220px) / var(--fshop-scale))));
+  min-height: 0;
+  overflow: auto;
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-head,
+#foundryshop-toolbox .fshop-tb-flyout-row {
+  display: grid;
+  grid-template-columns: var(--by-tb-size) var(--by-tb-size) minmax(0, 1fr) var(--by-tb-size);
+  gap: var(--by-tb-gap);
+  align-items: center;
+  margin-bottom: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-head {
+  text-align: center;
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-entry {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 3px;
+}
+
+#foundryshop-toolbox button.fshop-tb-flyout-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  justify-content: flex-start;
+  padding-left: calc(4px + min(var(--layer-depth), 4) * 8px);
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-active {
+  background: var(--color-warm-3, rgba(255, 100, 0, 0.25));
+}
+
+#foundryshop-toolbox .fshop-tb-flyout-unassigned {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Brush bar: colors + preset, width, opacity, recent colors. */
+#foundryshop-toolbox .fshop-tb-section.fshop-tb-quick {
+  display: flex;
+  flex-direction: column;
+}
+
+#foundryshop-toolbox .fshop-tb-swatches.fshop-tb-recent {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+#foundryshop-toolbox .fshop-tb-row.fshop-tb-tools {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+#foundryshop-toolbox .fshop-tb > .fshop-tb-selection {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  padding: 2px var(--by-tb-gap);
+  border-radius: 4px;
+  background: var(--color-warm-3, rgba(255, 100, 0, 0.15));
+}
+
+#foundryshop-toolbox .fshop-tb-selection-count {
+  flex: 1 1 auto;
+  font-weight: bold;
+}
+
+#foundryshop-toolbox .fshop-tb-selection .fshop-tb-hint {
+  flex-basis: 100%;
+  font-size: 11px;
+}
+
+#foundryshop-toolbox .fshop-tb-tools button,
+#foundryshop-toolbox .fshop-tb-recent button {
+  width: 100%;
+  min-width: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-quick > .fshop-tb-row {
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-chip {
+  width: var(--by-tb-size);
+  min-width: var(--by-tb-size);
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-preset {
+  flex: 1 1 0;
+  min-width: 4em;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-value {
+  flex: none;
+  min-width: 2em;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-width-slider {
+  flex: 1 1 0;
+  min-width: 3em;
+  margin: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-sizes {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
+#foundryshop-toolbox button.fshop-tb-size {
+  flex: none;
+  width: calc(var(--by-tb-size) * 0.75);
+  min-width: 0;
+  height: calc(var(--by-tb-size) * 0.75);
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-opacity {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--by-tb-gap) * 2);
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-alpha {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) 3em;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 11px;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-alpha input[type="range"] {
+  min-width: 0;
+  width: 100%;
+  height: calc(var(--by-tb-size) * 0.6);
+  margin: 0;
+  padding: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-quick .fshop-tb-alpha-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+#foundryshop-toolbox .fshop-tb-compact { --by-tb-size: 28px; --by-tb-gap: 3px; --by-tb-font: var(--font-size-12, 12px); }
+#foundryshop-toolbox .fshop-tb-comfortable { --by-tb-size: 36px; --by-tb-gap: 4px; --by-tb-font: var(--font-size-13, 13px); }
+#foundryshop-toolbox .fshop-tb-tablet { --by-tb-size: 44px; --by-tb-gap: 6px; }
+
+#foundryshop-toolbox .fshop-tb-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--by-tb-gap);
+  padding-top: var(--by-tb-gap);
+  border-top: 1px solid var(--color-border, rgba(128, 128, 128, 0.4));
+}
+
+#foundryshop-toolbox .fshop-tb-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-end { margin-left: auto; }
+
+#foundryshop-toolbox button.fshop-tb-button,
+#foundryshop-toolbox button.fshop-tb-chip {
+  flex: none;
+  min-width: var(--by-tb-size);
+  height: var(--by-tb-size);
+  margin: 0;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#foundryshop-toolbox button[aria-pressed="true"] {
+  outline: 2px solid var(--color-warm-1, #ff6400);
+  outline-offset: -2px;
+  background: var(--color-warm-3, rgba(255, 100, 0, 0.25));
+}
+
+/* Color buttons always show the color they represent, including pressed/hover theme states. */
+#foundryshop-toolbox button.fshop-tb-chip,
+#foundryshop-toolbox button.fshop-tb-swatch {
+  background: var(--by-tb-color) !important;
+  color: var(--by-tb-color-text, #fff) !important;
+  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #fff inset;
+}
+
+#foundryshop-toolbox button.fshop-tb-chip { min-width: calc(var(--by-tb-size) * 1.8); font-weight: bold; }
+
+#foundryshop-toolbox button.fshop-tb-chip[aria-pressed="true"] {
+  outline: 3px solid var(--color-warm-1, #ff6400);
+  outline-offset: 1px;
+}
+
+#foundryshop-toolbox button.fshop-tb-swatch:hover,
+#foundryshop-toolbox button.fshop-tb-chip:hover {
+  outline: 2px solid var(--color-warm-2, #ff9000);
+  outline-offset: 1px;
+}
+
+#foundryshop-toolbox button.fshop-tb-nofill {
+  background:
+    linear-gradient(to top right, transparent 46%, #c00 46%, #c00 54%, transparent 54%),
+    repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 10px 10px !important;
+  color: #000 !important;
+}
+
+#foundryshop-toolbox .fshop-tb-width { cursor: ns-resize; }
+
+#foundryshop-toolbox .fshop-tb-artwork-preview {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #777;
+  background: #fff;
+  color: #333;
+}
+
+#foundryshop-toolbox .fshop-tb-artwork-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#foundryshop-toolbox .fshop-tb-artwork-preview[data-preview-state="error"] { color: #a22; }
+#foundryshop-toolbox .fshop-tb-preview-scope { flex-basis: 100%; font-size: 10px; opacity: 0.8; }
+
+#foundryshop-toolbox .fshop-tb-label { min-width: 3.5em; }
+#foundryshop-toolbox .fshop-tb-value { min-width: 2.5em; text-align: center; font-weight: bold; }
+
+#foundryshop-toolbox .fshop-tb-alpha {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 140px;
+  gap: 2px;
+}
+
+#foundryshop-toolbox .fshop-tb-alpha input[type="range"] {
+  width: 100%;
+  height: calc(var(--by-tb-size) * 0.6);
+}
+
+#foundryshop-toolbox select {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--by-tb-size);
+}
+
+#foundryshop-toolbox .fshop-tb-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-palette-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-palette-add {
+  flex: none;
+  width: var(--by-tb-size);
+  height: var(--by-tb-size);
+}
+
+#foundryshop-toolbox .fshop-tb-material-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#foundryshop-toolbox .fshop-material-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-material-search { flex-wrap: nowrap; }
+#foundryshop-toolbox .fshop-material-search input {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+}
+
+#foundryshop-toolbox .fshop-material-selected-source {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+}
+
+#foundryshop-toolbox .fshop-material-selected-source[hidden] { display: none; }
+
+#foundryshop-toolbox .fshop-material-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--by-tb-gap);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+#foundryshop-toolbox button.fshop-material-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: auto;
+  padding: 6px;
+  white-space: normal;
+}
+
+#foundryshop-toolbox .fshop-material-card img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+#foundryshop-toolbox .fshop-material-card[hidden],
+#foundryshop-toolbox .fshop-material-card [hidden] { display: none; }
+
+#foundryshop-toolbox .fshop-material-error {
+  color: var(--color-text-danger, #d85c5c);
+}
+
+#foundryshop-toolbox .fshop-tb-color-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--by-tb-gap);
+  padding: 6px;
+  border: 1px solid var(--color-border, #888);
+  border-radius: 4px;
+}
+
+#foundryshop-toolbox .fshop-tb-color-card > span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+#foundryshop-toolbox button.fshop-tb-swatch {
+  flex: none;
+  width: var(--by-tb-size);
+  height: var(--by-tb-size);
+  margin: 0;
+  padding: 0;
+}
+
+#foundryshop-toolbox .fshop-tb-modes button { flex: 1 1 0; }
+
+#foundryshop-toolbox .fshop-tb-status {
+  padding: 2px 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#foundryshop-toolbox .fshop-tb-status-armed {
+  background: var(--color-warm-3, rgba(255, 100, 0, 0.25));
+  font-weight: bold;
+}
+
+#foundryshop-toolbox .fshop-tb-armed {
+  max-width: 10em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+#foundryshop-toolbox .fshop-tb-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--by-tb-gap);
+}
+
+#foundryshop-toolbox .fshop-tb-label-item {
+  display: inline-flex;
+  gap: 2px;
+}
+
+#foundryshop-toolbox button.fshop-tb-label-button {
+  max-width: 12em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#foundryshop-toolbox .fshop-tb-hint {
+  opacity: 0.75;
+  font-style: italic;
+}
+
+#foundryshop-toolbox .fshop-label-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--by-tb-gap);
+  min-width: 0;
+}
+#foundryshop-toolbox .fshop-label-editor label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#foundryshop-toolbox .fshop-label-editor :is(select, textarea) { width: 100%; min-width: 0; }
+#foundryshop-toolbox .fshop-label-editor textarea { resize: vertical; }
+#foundryshop-toolbox input[data-tablet-key-test] { width: 100%; min-height: var(--by-tb-size); }
+#foundryshop-toolbox .fshop-label-controls { display: grid; grid-template-columns: 2fr 1fr 1.2fr; gap: var(--by-tb-gap); }
+#foundryshop-toolbox .fshop-label-size { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#foundryshop-toolbox .fshop-label-size-controls { display: grid; grid-template-columns: var(--by-tb-size) minmax(0, 1fr) var(--by-tb-size); gap: 2px; align-items: center; }
+#foundryshop-toolbox .fshop-label-size-controls input { padding-inline: 2px; text-align: center; appearance: textfield; }
+#foundryshop-toolbox .fshop-label-size-controls input::-webkit-inner-spin-button,
+#foundryshop-toolbox .fshop-label-size-controls input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+#foundryshop-toolbox .fshop-label-controls input { width: 100%; min-width: 0; }
+#foundryshop-toolbox textarea.fshop-label-text-preview {
+  background: #e6dbc0 !important;
+  caret-color: #302b26;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 12px;
+  height: 160px;
+  min-height: 100px;
+  max-height: 240px;
+  overflow: auto;
+  line-height: 1.35;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#foundryshop-toolbox textarea.fshop-label-text-preview::placeholder { color: #6a6254; opacity: 1; }
+#foundryshop-toolbox textarea.fshop-label-text-preview::selection { background: #a7c4e5; color: #18212b; }
+#foundryshop-toolbox button.fshop-label-preset {
+  background: #e6dbc0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: inherit;
+  min-height: var(--by-tb-size);
+  max-width: 100%;
+  padding: 4px 8px;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.2;
+}
+#foundryshop-toolbox .fshop-tb-label-item { max-width: 100%; min-width: 0; align-items: center; }
+#foundryshop-toolbox button.fshop-starter-preview {
+  width: 100%;
+  min-height: var(--by-tb-size);
+  height: 96px;
+  padding: 4px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#foundryshop-toolbox button.fshop-starter-preview img { pointer-events: none; max-width: 100%; }
+#foundryshop-toolbox button.fshop-label-preset[aria-pressed="true"] { outline: 2px solid var(--fshop-accent, #ff6400); }
+#foundryshop-toolbox button.fshop-label-preset:hover,
+#foundryshop-toolbox button.fshop-label-preset:focus-visible { text-decoration: underline; }
+
+/* Same approach as the config panel: an inner block that button theme styles cannot repaint. */
+#foundryshop-toolbox button.fshop-tb-swatch { padding: 2px; }
+#foundryshop-toolbox .fshop-tb-swatch-block {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  pointer-events: none;
+}
+#foundryshop-toolbox .fshop-tb-swatch:has(.fshop-pair-half) { display: flex; gap: 0; overflow: hidden; }
+#foundryshop-toolbox .fshop-pair-half { width: 50%; height: 100%; display: grid; place-items: center; pointer-events: none; overflow: hidden; }
+#foundryshop-toolbox .fshop-pair-half + .fshop-pair-half { border-left: 1px solid #ffffff; }
+#foundryshop-toolbox .fshop-pair-half img { width: 100%; height: 100%; object-fit: cover; }
+#foundryshop-toolbox .fshop-pair-empty { background-image: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%); background-size: 12px 12px; }
+.fshop-pair-editor { display: grid; gap: 8px; max-width: 440px; }
+.fshop-pair-editor label { display: grid; gap: 4px; }
+.fshop-pair-repeat-buttons { display: flex; gap: 8px; }
+.fshop-pair-editor :is(input, select, button) { min-height: 44px; width: 100%; }
+.fshop-pair-editor img { max-width: 100%; object-fit: contain; background: #fff; }

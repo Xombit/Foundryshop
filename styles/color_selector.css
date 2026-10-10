@@ -1,25 +1,25 @@
-/* Boneyard Drawing Tools - Color Selector Styles */
+/* Foundryshop - Color Selector Styles */
 
-label.by-text {
+label.fshop-text {
   white-space: nowrap;
   flex-grow: 0;
 }
 
-div.by-row-container {
+div.fshop-row-container {
   display: flex;
   flex-direction: row;
 }
 
-div.by-col-container {
+div.fshop-col-container {
   display: flex;
   flex-direction: column;
 }
 
-div.by-circle {
+div.fshop-circle {
   border-radius: 50%;
 }
 
-button.by-swatch {
+button.fshop-swatch {
   width: 15px;
   height: 15px;
   border: 1px solid black;
@@ -29,20 +29,20 @@ button.by-swatch {
   cursor: pointer;
 }
 
-div#by-preset-swatches-container,
-div#by-recent-swatches-container {
+div#fshop-preset-swatches-container,
+div#fshop-recent-swatches-container {
   display: grid;
   grid-row-gap: 2%;
   grid-template-columns: repeat(10, 1fr);
 }
 
-div#by-recent-swatches-container {
+div#fshop-recent-swatches-container {
   margin-top: 4px;
   border-top: 1px solid gray;
   padding-top: 4px;
 }
 
-div#by-dropper-preview {
+div#fshop-dropper-preview {
   border: 2px solid black;
   position: absolute;
   z-index: 200;
@@ -53,39 +53,39 @@ div#by-dropper-preview {
   background-color: rgb(53, 53, 53);
 }
 
-div#by-color-picker-container > div {
+div#fshop-color-picker-container > div {
   margin-bottom: 6px;
 }
 
-div#by-canvas-container,
-div#by-hue-siderbar-container {
+div#fshop-canvas-container,
+div#fshop-hue-siderbar-container {
   display: flex;
   border-style: groove;
   border-color: black;
   border-width: 1px;
 }
 
-div#by-hue-siderbar-container {
+div#fshop-hue-siderbar-container {
   margin-left: 6px;
 }
 
-svg#by-color-picker-marker-container {
+svg#fshop-color-picker-marker-container {
   position: absolute;
   pointer-events: none;
 }
 
-div#by-hue-siderbar-container {
+div#fshop-hue-siderbar-container {
   position: relative;
 }
 
-svg#by-hue-siderbar-marker-container {
+svg#fshop-hue-siderbar-marker-container {
   position: absolute;
   left: -5px;
   top: -2px;
 }
 
-input.by-RGB-input,
-input[type=text].by-RGB-input {
+input.fshop-RGB-input,
+input[type=text].fshop-RGB-input {
   width: 25px;
   background: white;
   color: black;
@@ -94,17 +94,17 @@ input[type=text].by-RGB-input {
   border: 1px solid #555;
 }
 
-div#by-rgb-input-container > div,
-div#by-dropper-container,
-div#by-random-container {
+div#fshop-rgb-input-container > div,
+div#fshop-dropper-container,
+div#fshop-random-container {
   margin: 0 2px;
 }
 
-div#by-rgb-input-container > div > label {
+div#fshop-rgb-input-container > div > label {
   padding-top: 2px;
 }
 
-button.by-dropper-button {
+button.fshop-dropper-button {
   line-height: normal;
   padding: 0;
   height: 20px;
@@ -112,7 +112,7 @@ button.by-dropper-button {
   cursor: pointer;
 }
 
-svg.by-fa-dropper-icon {
+svg.fshop-fa-dropper-icon {
   display: flex;
   width: 100%;
   height: 0.5em;

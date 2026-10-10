@@ -48,10 +48,13 @@ env:
   release_module_url: "https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip"
 
   # URL for the license of the specific release.
-  release_license_url: "https://github.com/${{github.repository}}/blob/${{github.event.release.tag_name}}/LICENSEd"
+  release_license_url: "https://github.com/${{github.repository}}/blob/${{github.event.release.tag_name}}/LICENSE"
 
   # URL for the readme of the specific release.
   release_readme_url: "https://github.com/${{github.repository}}/blob/${{github.event.release.tag_name}}/README.md"
+
+  # URL for the changelog of the specific release.
+  release_changelog_url: "https://github.com/${{github.repository}}/blob/${{github.event.release.tag_name}}/CHANGELOG.md"
 
 
 
@@ -110,11 +113,15 @@ jobs:
           DOWNLOAD: ${{ env.release_module_url }}
           LICENSE: ${{ env.release_license_url }}
           README: ${{ env.release_readme_url }}
+          CHANGELOG: ${{ env.release_changelog_url }}
 
 
       # Create a "module.zip" archive containing all the module's required files.
       # If you have other directories or files that will need to be added to
       # your packaged module, add them here.
+      - name: Validate Module Contents
+        run: node tools/validate-package.mjs .
+
       - name: Create Module Archive
         run: |
           # Note that `zip` will only emit warnings when a file or directory
@@ -129,12 +136,18 @@ jobs:
             setup.js                             \
             README.md                            \
             LICENSE                              \
+            CHANGELOG.md                         \
             templates/                           \
             scripts/                             \
             styles/                              \
-            languages/                           
+            languages/                           \
+            assets/                              \
+            `# Ship compiled CSS only.`          \
+            --exclude "styles/*.scss" "styles/*.bat"
           # Don't forget to add a backslash at the end of the line for any
           # additional files or directories!
+          unzip -q module.zip -d "$RUNNER_TEMP/foundryshop-package"
+          node tools/validate-package.mjs "$RUNNER_TEMP/foundryshop-package"
 
 
       # Update the GitHub release with the manifest and module archive files.

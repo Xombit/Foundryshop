@@ -7,10 +7,153 @@ import {
 	SETTINGS_RECENT_COLOR_HISTORY,
 	SETTINGS_RECENT_COLORS,
 	SETTINGS_WINDOW_POSITION,
+	SETTINGS_TOOLBOX_AUTO_SHOW,
+	SETTINGS_TOOLBOX_DENSITY,
+	SETTINGS_TOOLBOX_THEME,
+	SETTINGS_TOOLBOX_SCALE,
+	SETTINGS_TOOLBOX_STATE,
+	SETTINGS_DRAWING_EDGE_PAN,
 } from './constants.js';
 import { Drawing_Tools } from './drawing_tools.js';
+import { Drawing_Toolbox } from './drawing_toolbox.js';
+import { PERSONAL_COLORS, CAMPAIGN_COLORS, PALETTE_CHANGED } from './saved_colors.js';
+import { PERSONAL_LABELS, CAMPAIGN_LABELS, LABELS_CHANGED } from './label_banks.js';
+import { disarmLabel } from './label_placement.js';
+import { SHARED_PALETTES } from './shared_palettes.js';
+import { STAMP_FOLDER } from './artwork_stamps.js';
+import { TOOLBOX_SCALE } from './toolbox_appearance.js';
+import { LIBRARY_FOLDER, LIBRARY_OPERATIONS, LIBRARY_CATALOG, LIBRARY_CHANGED } from './project_library.js';
+import { starterLabels } from './label_styles.js';
+import { registerTabletKeybindings } from './tablet_controls.js';
+import { registerBakeStorageSetting } from './layers/bake_storage.js';
+import { registerBrushPresetSetting } from './brush_presets.js';
+import { registerPathPresetSetting } from './path_presets.js';
 
 export function prepare_settings() {
+	registerTabletKeybindings();
+	registerBakeStorageSetting();
+	game.settings.register(MODULE, 'materialRepeat', {
+		scope: 'client', config: false, type: Number, default: 1,
+		onChange: () => Drawing_Toolbox._instance?.requestRefresh(),
+	});
+	game.settings.register(MODULE, LIBRARY_FOLDER, {
+		name: 'FOUNDRYSHOP.Library.FolderName', hint: 'FOUNDRYSHOP.Library.FolderHint',
+		scope: 'world', config: true, type: String, default: '',
+		onChange: () => Drawing_Toolbox._instance?.requestRefresh(),
+	});
+	game.settings.register(MODULE, LIBRARY_OPERATIONS, {
+		scope: 'world', config: false, type: Object, default: { version: 1, revision: 0, entries: [] },
+		onChange: () => Hooks.callAll(LIBRARY_CHANGED),
+	});
+	game.settings.register(MODULE, LIBRARY_CATALOG, {
+		scope: 'world', config: false, type: Object, default: { version: 1, revision: 0, entries: [] },
+		onChange: () => Hooks.callAll(LIBRARY_CHANGED),
+	});
+	game.settings.register(MODULE, STAMP_FOLDER, {
+		name: 'FOUNDRYSHOP.Stamps.FolderName', hint: 'FOUNDRYSHOP.Stamps.FolderHint',
+		scope: 'world', config: true, type: String, default: '',
+	});
+	game.settings.register(MODULE, SHARED_PALETTES, {
+		scope: 'world', config: false, type: Object,
+		default: { version: 1, revision: 0, palettes: [] },
+		onChange: () => Hooks.callAll(PALETTE_CHANGED),
+	});
+	game.settings.register(MODULE, SETTINGS_DRAWING_EDGE_PAN, {
+		name: 'FOUNDRYSHOP.Settings.DrawingEdgePan.Name',
+		hint: 'FOUNDRYSHOP.Settings.DrawingEdgePan.Hint',
+		scope: 'client', config: true, type: Boolean, default: false,
+	});
+	for (const [key, scope] of [[PERSONAL_COLORS, 'user'], [CAMPAIGN_COLORS, 'world']]) {
+		game.settings.register(MODULE, key, {
+			scope,
+			config: false,
+			type: Object,
+			default: { schemaVersion: 1, colors: [] },
+			onChange: () => Hooks.callAll(PALETTE_CHANGED),
+		});
+	}
+	for (const [key, scope] of [[PERSONAL_LABELS, 'user'], [CAMPAIGN_LABELS, 'world']]) {
+		game.settings.register(MODULE, key, {
+			scope,
+			config: false,
+			type: Object,
+			default: { schemaVersion: 1, labels: starterLabels(), startersInitialized: true },
+			onChange: () => Hooks.callAll(LABELS_CHANGED),
+		});
+	}
+	game.settings.register(MODULE, SETTINGS_TOOLBOX_AUTO_SHOW, {
+		name: 'FOUNDRYSHOP.Settings.ToolboxAutoShow.Name',
+		hint: 'FOUNDRYSHOP.Settings.ToolboxAutoShow.Hint',
+		scope: 'client',
+		config: true,
+		type: Boolean,
+		default: true,
+	});
+	game.settings.register(MODULE, SETTINGS_TOOLBOX_DENSITY, {
+		name: 'FOUNDRYSHOP.Settings.ToolboxDensity.Name',
+		hint: 'FOUNDRYSHOP.Settings.ToolboxDensity.Hint',
+		scope: 'client',
+		config: true,
+		type: String,
+		choices: {
+			compact: 'FOUNDRYSHOP.Settings.ToolboxDensity.Compact',
+			comfortable: 'FOUNDRYSHOP.Settings.ToolboxDensity.Comfortable',
+			tablet: 'FOUNDRYSHOP.Settings.ToolboxDensity.Tablet',
+		},
+		default: 'tablet',
+		onChange: () => Drawing_Toolbox._instance?.requestRefresh(),
+	});
+	game.settings.register(MODULE, SETTINGS_TOOLBOX_THEME, {
+		name: 'FOUNDRYSHOP.Settings.ToolboxTheme.Name',
+		hint: 'FOUNDRYSHOP.Settings.ToolboxTheme.Hint',
+		scope: 'client',
+		config: true,
+		type: String,
+		default: 'slate',
+		choices: {
+			slate: 'FOUNDRYSHOP.Toolbox.Theme.slate',
+			foundry: 'FOUNDRYSHOP.Toolbox.Theme.foundry',
+			system: 'FOUNDRYSHOP.Toolbox.Theme.system',
+		},
+		onChange: () => Drawing_Toolbox._instance?.requestRefresh(),
+	});
+	game.settings.register(MODULE, SETTINGS_TOOLBOX_SCALE, {
+		name: 'FOUNDRYSHOP.Settings.ToolboxScale.Name',
+		hint: 'FOUNDRYSHOP.Settings.ToolboxScale.Hint',
+		scope: 'client',
+		config: true,
+		type: Number,
+		default: TOOLBOX_SCALE.default,
+		range: { min: TOOLBOX_SCALE.min, max: TOOLBOX_SCALE.max, step: TOOLBOX_SCALE.step },
+		onChange: () => Drawing_Toolbox._instance?.requestRefresh(),
+	});
+	game.settings.register(MODULE, SETTINGS_TOOLBOX_STATE, {
+		scope: 'client',
+		config: false,
+		type: Object,
+		default: {},
+	});
+	// Unbound by default so tablet express keys / users can assign them without colliding with core shortcuts.
+	game.keybindings.register(MODULE, 'toggleToolbox', {
+		name: 'FOUNDRYSHOP.Keybindings.ToggleToolbox',
+		editable: [],
+		onDown: () => {
+			Drawing_Toolbox.toggle();
+			return true;
+		},
+		restricted: false,
+		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+	});
+	game.keybindings.register(MODULE, 'disarmLabel', {
+		name: 'FOUNDRYSHOP.Keybindings.DisarmLabel',
+		editable: [],
+		onDown: () => {
+			disarmLabel();
+			return true;
+		},
+		restricted: false,
+		precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+	});
 	// Register keybinding for opening the drawing tools panel
 	game.keybindings.register(MODULE, 'openPanel', {
 		name: 'CONTROLS.QuickDrawConfig',
@@ -84,6 +227,8 @@ export function prepare_settings() {
 		default: [],
 		requiresReload: false,
 	});
+	registerBrushPresetSetting();
+	registerPathPresetSetting();
 
 	game.settings.register(MODULE, SETTINGS_WINDOW_POSITION, {
 		scope: 'client',

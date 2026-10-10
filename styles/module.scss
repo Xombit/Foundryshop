@@ -1,16 +1,16 @@
 /* Using a # allows styling to be applied by id rather than class */
 
-div.by-row-container {
+div.fshop-row-container {
     display: flex;
     flex-direction: row;
 }
 
-div.by-col-container {
+div.fshop-col-container {
     display: flex;
     flex-direction: column;
 }
 
-div#by-quick-draw-config {
+div#fshop-quick-draw-config {
     margin: 0;
     padding: 0;
     box-shadow: none;
@@ -21,38 +21,38 @@ div#by-quick-draw-config {
     background: none;
 }
 
-div#by-tool-name-bar {
+div#fshop-tool-name-bar {
     border-radius: 10px 10px 0 0;
 }
 
-div#by-control-menu {
+div#fshop-control-menu {
     background: #2e353b;
     width: min-content;
 }
 
-div#by-tool-container {
+div#fshop-tool-container {
     box-shadow: 4px 0px 4px -2px #00000060;
 }
 
-div#by-color-selector-background {
+div#fshop-color-selector-background {
     width: 100%;
 }
 
-div#by-control-menu > div > div {
+div#fshop-control-menu > div > div {
     margin: 3px;
 }
 
-div#by-stroke-menu > *,
-div#by-fill-menu > * {
+div#fshop-stroke-menu > *,
+div#fshop-fill-menu > * {
     margin-bottom: 4px;
 }
 
-label.by-text {
+label.fshop-text {
     white-space: nowrap;
     flex-grow: 0;
 }
 
-svg > text.by-stroke-text {
+svg > text.fshop-stroke-text {
     fill: white;
     stroke: black;
     stroke-width: 3px;
@@ -65,7 +65,7 @@ svg > text.by-stroke-text {
     stroke-linejoin: round;
 }
 
-svg.by-fa-button-icon {
+svg.fshop-fa-button-icon {
     display: flex;
     width: 100%;
     height: 1em;
@@ -79,14 +79,14 @@ svg.by-fa-button-icon {
     pointer-events: none;
 }
 
-button.by-color-button {
+button.fshop-color-button {
     width: 40px;
     height: 40px;
     display: block;
     margin: 0 auto;
 }
 
-button.by-input-companion-button {
+button.fshop-input-companion-button {
     /* flex-grow: 0; */
     /* line-height: normal; */
     line-height: 1em;
@@ -97,38 +97,100 @@ button.by-input-companion-button {
     padding: 0 0 0 0;
 }
 
-span.by-input-label {
+span.fshop-input-label {
     padding: 0 3px 0 3px;
 }
 
-input.by-text-input,
-input[type='text'].by-text-input,
-input[type='number'].by-text-input {
+input.fshop-text-input,
+input[type='text'].fshop-text-input,
+input[type='number'].fshop-text-input {
     width: 80px;
     background: white;
     display: list-item;
 }
 
-input.by-text-input#by-stroke-width {
+input.fshop-text-input#fshop-stroke-width {
     text-align: center;
     height: auto;
     flex-grow: 1;
     width: 40px;
 }
 
-input.by-range-input {
+input.fshop-range-input {
     width: 80px;
     display: list-item;
 }
 
-select.by-select {
+select.fshop-select {
     text-align: left;
     width: 80px;
     display: list-item;
     background: white;
 }
 
-select.by-select#by-fill-type {
+.fshop-drawing-tools {
+    #fshop-saved-colors {
+        padding: 8px;
+        border-top: 1px solid var(--color-border-light-primary, #808080);
+    }
+
+    .fshop-palette-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+
+        button, select { flex: 1; }
+    }
+
+    #fshop-palette-access {
+        max-width: 340px;
+        font-size: 12px;
+    }
+
+    #fshop-saved-color-list {
+        max-height: 180px;
+        overflow-y: auto;
+    }
+
+    .fshop-saved-color-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
+
+        > span {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 220px;
+        }
+
+        > button {
+            flex: none;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+        }
+    }
+
+    .fshop-saved-color-swatch {
+        border: 1px solid var(--color-border-light-primary, #808080);
+    }
+
+    .fshop-saved-color-block {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 24px;
+        border-radius: 2px;
+        pointer-events: none;
+    }
+}
+
+select.fshop-select#fshop-fill-type {
     height: auto;
     flex-grow: 0;
 }

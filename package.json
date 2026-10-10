@@ -1,0 +1,18 @@
+{
+  "name": "foundryshop",
+  "version": "1.0.0",
+  "description": "Pen- and tablet-friendly drawing toolbox for Foundry VTT.",
+  "license": "MIT",
+  "repository": "github:Xombit/foundryshop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync-vendor": "node .\\tools\\sync-vendor.mjs",
+    "test": "node --test",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build.ps1",
+    "pack-win": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\pack.ps1"
+  },
+  "devDependencies": {
+    "fflate": "0.8.3"
+  }
+}

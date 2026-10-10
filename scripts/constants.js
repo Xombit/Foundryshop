@@ -1,4 +1,4 @@
-export const MODULE = "boneyard-drawing-tools";
+export const MODULE = "foundryshop";
 export const SETTINGS_COLOR_SELECTOR_SIZE = "color_selector_size";
 export const SETTING_DROPPER_PREVIEW_SIZE = "dropper_preview_size";
 export const SETTING_DROPPER_READ_RADIUS = "dropper_read_radius";
@@ -6,3 +6,9 @@ export const SETTINGS_PRESET_COLOR_SWATCHES = "preset_color_swatches";
 export const SETTINGS_RECENT_COLOR_HISTORY = "recent_color_history";
 export const SETTINGS_RECENT_COLORS = "recent_colors";
 export const SETTINGS_WINDOW_POSITION = "window_position";
+export const SETTINGS_TOOLBOX_AUTO_SHOW = "toolboxAutoShow";
+export const SETTINGS_TOOLBOX_DENSITY = "toolboxDensity";
+export const SETTINGS_TOOLBOX_THEME = "toolboxTheme";
+export const SETTINGS_TOOLBOX_SCALE = "toolboxScale";
+export const SETTINGS_TOOLBOX_STATE = "toolboxState";
+export const SETTINGS_DRAWING_EDGE_PAN = "drawingEdgePan";

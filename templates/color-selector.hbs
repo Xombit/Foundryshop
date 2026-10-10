@@ -1,48 +1,48 @@
-<div class="by-col-container" id="by-color-selector">
+<div class="fshop-col-container" id="fshop-color-selector">
 
-    <div class="by-col-container" id="by-color-picker-container">
-        <div class="by-row-container">
-            <div id="by-canvas-container">
-                <canvas id="by-color-picker-canvas" width="{{canvas_size}}px" height="{{canvas_size}}px"></canvas>
-                <svg id="by-color-picker-marker-container" width="{{canvas_size}}px" height="{{canvas_size}}px">
-                    <circle id="by-color-picker-marker" cx="0" cy="0" r="3" stroke="black" stroke-width="1" fill="transparent" />
-                    <circle id="by-color-picker-marker-outline" cx="0" cy="0" r="4" stroke="lightslategray" stroke-width="1" fill="transparent" />
+    <div class="fshop-col-container" id="fshop-color-picker-container">
+        <div class="fshop-row-container">
+            <div id="fshop-canvas-container">
+                <canvas id="fshop-color-picker-canvas" width="{{canvas_size}}px" height="{{canvas_size}}px"></canvas>
+                <svg id="fshop-color-picker-marker-container" width="{{canvas_size}}px" height="{{canvas_size}}px">
+                    <circle id="fshop-color-picker-marker" cx="0" cy="0" r="3" stroke="black" stroke-width="1" fill="transparent" />
+                    <circle id="fshop-color-picker-marker-outline" cx="0" cy="0" r="4" stroke="lightslategray" stroke-width="1" fill="transparent" />
                 </svg> 
             </div>
-            <div id="by-hue-siderbar-container">
-                <canvas id="by-hue-siderbar" width="10px" height="{{canvas_size}}px"></canvas>
-                <svg id="by-hue-siderbar-marker-container" width="15px" height="{{hue_height}}px">
-                    <rect id="by-hue-sidebar-marker" x="0" width="10" height="4" rx="1" stroke="black" stroke-width="1" fill="gray" />
+            <div id="fshop-hue-siderbar-container">
+                <canvas id="fshop-hue-siderbar" width="10px" height="{{canvas_size}}px"></canvas>
+                <svg id="fshop-hue-siderbar-marker-container" width="15px" height="{{hue_height}}px">
+                    <rect id="fshop-hue-sidebar-marker" x="0" width="10" height="4" rx="1" stroke="black" stroke-width="1" fill="gray" />
                 </svg>
             </div>
         </div>
-        <div class="by-row-container">
-            <div class="by-row-container" id="by-rgb-input-container">
-                <div class="by-row-container" id="by-red-input-container">
-                    <label class="by-text" for="by-red-text">R</label>
-                    <input class="by-RGB-input" id="by-red-text" type="text" value="{{red}}"/>
+        <div class="fshop-row-container">
+            <div class="fshop-row-container" id="fshop-rgb-input-container">
+                <div class="fshop-row-container" id="fshop-red-input-container">
+                    <label class="fshop-text" for="fshop-red-text">R</label>
+                    <input class="fshop-RGB-input" id="fshop-red-text" type="text" value="{{red}}"/>
                 </div>
-                <div class="by-row-container" id="by-green-input-container">
-                    <label class="by-text" for="by-green-text">G</label>
-                    <input class="by-RGB-input" id="by-green-text" type="text" value="{{green}}"/>
+                <div class="fshop-row-container" id="fshop-green-input-container">
+                    <label class="fshop-text" for="fshop-green-text">G</label>
+                    <input class="fshop-RGB-input" id="fshop-green-text" type="text" value="{{green}}"/>
                 </div>
-                <div class="by-row-container" id="by-blue-input-container">
-                    <label class="by-text" for="by-blue-text">B</label>
-                    <input class="by-RGB-input" id="by-blue-text" type="text" value="{{blue}}"/>
+                <div class="fshop-row-container" id="fshop-blue-input-container">
+                    <label class="fshop-text" for="fshop-blue-text">B</label>
+                    <input class="fshop-RGB-input" id="fshop-blue-text" type="text" value="{{blue}}"/>
                 </div>
             </div>
-            <div id="by-dropper-container">
-                <button class="by-dropper-button" id="by-dropper-button" type="button">
-                    <svg class="by-fa-dropper-icon">
+            <div id="fshop-dropper-container">
+                <button class="fshop-dropper-button" id="fshop-dropper-button" type="button">
+                    <svg class="fshop-fa-dropper-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="-100 200 712 712" style="scale: 0.9;">
                             <path d="M341.6 29.2L240.1 130.8l-9.4-9.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-9.4-9.4L482.8 170.4c39-39 39-102.2 0-141.1s-102.2-39-141.1 0zM55.4 323.3c-15 15-23.4 35.4-23.4 56.6v42.4L5.4 462.2c-8.5 12.7-6.8 29.6 4 40.4s27.7 12.5 40.4 4L89.7 480h42.4c21.2 0 41.6-8.4 56.6-23.4L309.4 335.9l-45.3-45.3L143.4 411.3c-3 3-7.1 4.7-11.3 4.7H96V379.9c0-4.2 1.7-8.3 4.7-11.3L221.4 247.9l-45.3-45.3L55.4 323.3z"/>
                         </svg>
                     </svg>
                 </button>
             </div>
-            <div id="by-random-container">
-                <button class="by-dropper-button" id="by-random-button" type="button">
-                    <svg class="by-fa-dropper-icon">
+            <div id="fshop-random-container">
+                <button class="fshop-dropper-button" id="fshop-random-button" type="button">
+                    <svg class="fshop-fa-dropper-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="-100 260 840 712" style="scale: 1;">
                             <path d="M274.9 34.3c-28.1-28.1-73.7-28.1-101.8 0L34.3 173.1c-28.1 28.1-28.1 73.7 0 101.8L173.1 413.7c28.1 28.1 73.7 28.1 101.8 0L413.7 274.9c28.1-28.1 28.1-73.7 0-101.8L274.9 34.3zM200 224a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM96 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 376a24 24 0 1 1 0-48 24 24 0 1 1 0 48zM352 200a24 24 0 1 1 0 48 24 24 0 1 1 0-48zM224 120a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm96 328c0 35.3 28.7 64 64 64H576c35.3 0 64-28.7 64-64V256c0-35.3-28.7-64-64-64H461.7c11.6 36 3.1 77-25.4 105.5L320 413.8V448zM480 328a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
                         </svg>
@@ -52,11 +52,11 @@
         </div>
     </div>
 
-    <div class="by-col-container" id="by-swatches-container">
-        <div id="by-preset-swatches-container">
+    <div class="fshop-col-container" id="fshop-swatches-container">
+        <div id="fshop-preset-swatches-container">
 
         </div>
-        <div id="by-recent-swatches-container">
+        <div id="fshop-recent-swatches-container">
 
         </div>
     </div>

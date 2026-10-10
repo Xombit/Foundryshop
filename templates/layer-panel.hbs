@@ -1,0 +1,116 @@
+<section class="fshop-layer-panel">
+	<header class="fshop-layer-toolbar">
+		<strong>{{sceneName}}</strong>
+		{{#if showLayers}}
+		<button type="button" data-action="add"><i class="fas fa-plus" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Add"}}</button>
+		<button type="button" data-action="addGroup"><i class="fas fa-folder-plus" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.AddGroup"}}</button>
+		<button type="button" data-action="reconcile">{{localize "FOUNDRYSHOP.Layers.Reconcile"}}</button>
+		{{/if}}
+		{{#if showExchange}}
+		<button type="button" data-action="exportProject">{{localize "FOUNDRYSHOP.Project.Export"}}</button>
+		<button type="button" data-action="importProject">{{localize "FOUNDRYSHOP.Project.Import"}}</button>
+		{{#if hasImportJournal}}<button type="button" data-action="discardImport">{{localize "FOUNDRYSHOP.Project.Discard"}}</button>{{/if}}
+		{{/if}}
+	</header>
+	{{#if hasPathJournal}}
+	<p class="fshop-layer-hint" role="status">{{localize "FOUNDRYSHOP.Paths.PendingOperation"}}</p>
+	<button type="button" data-action="recoverPath">{{localize "FOUNDRYSHOP.Paths.Recover"}}</button>
+	{{/if}}
+	<p class="fshop-layer-hint" data-help>{{localize "FOUNDRYSHOP.Layers.PresentationHint"}}</p>
+	{{#if showLayers}}<p class="fshop-layer-hint" data-help>{{localize "FOUNDRYSHOP.Layers.GroupHint"}}</p>{{/if}}
+	{{#if showPresets}}
+	<section class="fshop-layer-presets" aria-label="{{localize "FOUNDRYSHOP.Layers.Presets"}}">
+		<header class="fshop-layer-toolbar">
+			<strong>{{localize "FOUNDRYSHOP.Layers.Presets"}}</strong>
+			<button type="button" data-action="presetCapture" {{#unless canCapturePreset}}disabled{{/unless}}>{{localize "FOUNDRYSHOP.Layers.PresetCapture"}}</button>
+		</header>
+		<p class="fshop-layer-hint" data-help>{{localize "FOUNDRYSHOP.Layers.PresetHint"}}</p>
+		{{#each presets}}
+		<div class="fshop-layer-preset">
+			<button type="button" data-action="presetApply" data-id="{{id}}" aria-pressed="{{matches}}" {{#unless canApply}}disabled{{/unless}} title="{{localize "FOUNDRYSHOP.Layers.PresetApply"}}">
+				{{name}}{{#if matches}} <i class="fas fa-check" aria-hidden="true"></i>{{/if}}
+			</button>
+			<button type="button" data-action="presetRecapture" data-id="{{id}}" title="{{localize "FOUNDRYSHOP.Layers.PresetRecapture"}}" aria-label="{{localize "FOUNDRYSHOP.Layers.PresetRecapture"}}: {{name}}"><i class="fas fa-camera" aria-hidden="true"></i></button>
+			<button type="button" data-action="presetRename" data-id="{{id}}" title="{{localize "FOUNDRYSHOP.Layers.PresetRename"}}" aria-label="{{localize "FOUNDRYSHOP.Layers.PresetRename"}}: {{name}}"><i class="fas fa-pen-to-square" aria-hidden="true"></i></button>
+			<button type="button" data-action="presetRemove" data-id="{{id}}" title="{{localize "FOUNDRYSHOP.Layers.PresetRemove"}}" aria-label="{{localize "FOUNDRYSHOP.Layers.PresetRemove"}}: {{name}}"><i class="fas fa-trash" aria-hidden="true"></i></button>
+			{{#if missingCount}}<p class="fshop-layer-hint">{{missingHint}}</p>{{/if}}
+			{{#if newCount}}<p class="fshop-layer-hint">{{newHint}}</p>{{/if}}
+		</div>
+		{{else}}
+		<p class="fshop-layer-hint">{{localize "FOUNDRYSHOP.Layers.NoPresets"}}</p>
+		{{/each}}
+	</section>
+	{{/if}}
+	{{#if showLayers}}
+	<div class="fshop-layer-headings">
+		<span>{{localize "FOUNDRYSHOP.Layers.Workspace"}}</span>
+		<span>{{localize "FOUNDRYSHOP.Layers.Players"}}</span>
+		<span>{{localize "FOUNDRYSHOP.Layers.Stack"}}</span>
+	</div>
+	<div class="fshop-layer-stack">
+		{{#each rows}}
+		<div class="fshop-layer-row {{#if active}}fshop-layer-active{{/if}} {{#if isGroup}}fshop-layer-group{{/if}}" data-layer-id="{{id}}" data-layer-kind="{{kind}}" style="--layer-depth: {{depth}}">
+			<button type="button" data-action="workspace" data-id="{{id}}" aria-pressed="{{localAria}}" title="{{localTitle}}" aria-label="{{name}}: {{localTitle}}">
+				<i class="fas {{localIcon}}" aria-hidden="true"></i>
+			</button>
+			<button type="button" data-action="present" data-id="{{id}}" aria-pressed="{{playerAria}}" title="{{playerTitle}}" aria-label="{{name}}: {{playerTitle}}">
+				<i class="fas {{playerIcon}}" aria-hidden="true"></i>
+			</button>
+			<button type="button" class="fshop-layer-name" data-action="{{#if isGroup}}collapseGroup{{else}}activate{{/if}}" data-id="{{id}}" {{#if isGroup}}aria-expanded="{{expanded}}"{{else}}aria-pressed="{{active}}" {{#if effectiveLocked}}disabled{{/if}}{{/if}}>
+				{{#if effectiveLocked}}<i class="fas fa-lock" aria-hidden="true"></i>{{/if}}
+				{{#if isGroup}}<i class="fas {{#if collapsed}}fa-folder{{else}}fa-folder-open{{/if}}" aria-hidden="true"></i>{{/if}}
+				{{#if active}}<i class="fas fa-pencil" aria-hidden="true"></i>{{/if}}
+				{{name}} <span class="fshop-layer-count">({{count}})</span>
+			</button>
+			<span class="fshop-layer-drag" draggable="true" data-layer-drag="{{id}}" title="{{localize "FOUNDRYSHOP.Layers.Drag"}}"><i class="fas fa-grip-vertical" aria-hidden="true"></i></span>
+			<button type="button" class="fshop-layer-menu-toggle" data-action="rowMenu" data-id="{{id}}" aria-expanded="{{menuOpen}}" title="{{localize "FOUNDRYSHOP.Layers.Actions"}}" aria-label="{{localize "FOUNDRYSHOP.Layers.Actions"}}: {{name}}"><i class="fas fa-ellipsis" aria-hidden="true"></i></button>
+			{{#if menuOpen}}
+			<div class="fshop-layer-options">
+				<div class="fshop-layer-action-buttons">
+				<button type="button" data-action="rename" data-id="{{id}}"><i class="fas fa-pen-to-square" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Rename"}}</button>
+				{{#if isLayer}}<button type="button" data-action="duplicate" data-id="{{id}}" {{#if effectiveLocked}}disabled{{/if}}><i class="fas fa-clone" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Duplicate"}}</button>
+				<button type="button" data-action="tracing" data-id="{{id}}" title="{{localize "FOUNDRYSHOP.Layers.TracingHint"}}"><i class="fas fa-image" aria-hidden="true"></i> {{#if hasTracing}}{{localize "FOUNDRYSHOP.Layers.TracingRefresh"}}{{else}}{{localize "FOUNDRYSHOP.Layers.Tracing"}}{{/if}}</button>
+				{{#if hasTracing}}<button type="button" data-action="tracingRemove" data-id="{{id}}"><i class="fas fa-trash-can" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.TracingRemove"}}</button>{{/if}}{{/if}}
+				<button type="button" data-action="up" data-id="{{id}}" {{#unless canUp}}disabled{{/unless}}><i class="fas fa-arrow-up" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Up"}}</button>
+				<button type="button" data-action="down" data-id="{{id}}" {{#unless canDown}}disabled{{/unless}}><i class="fas fa-arrow-down" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Down"}}</button>
+				<button type="button" data-action="lock" data-id="{{id}}" aria-pressed="{{locked}}" title="{{lockTitle}}"><i class="fas {{#if locked}}fa-lock-open{{else}}fa-lock{{/if}}" aria-hidden="true"></i> {{#if locked}}{{localize "FOUNDRYSHOP.Layers.Unlock"}}{{else}}{{localize "FOUNDRYSHOP.Layers.Lock"}}{{/if}}</button>
+				{{#if isLayer}}
+				<button type="button" data-action="assign" data-id="{{id}}" {{#if effectiveLocked}}disabled{{/if}}>{{localize "FOUNDRYSHOP.Layers.Assign"}}</button>
+				<button type="button" data-action="defaults" data-id="{{id}}" aria-pressed="{{hasDefaults}}">{{localize "FOUNDRYSHOP.Layers.Defaults"}}</button>
+				{{#if hasDefaults}}<button type="button" data-action="clearDefaults" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.ClearDefaults"}}</button>{{/if}}
+				{{/if}}
+				{{#if isGroup}}
+				<button type="button" data-action="add" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.AddChild"}}</button>
+				<button type="button" data-action="addGroup" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.AddSubgroup"}}</button>
+				<fieldset class="fshop-layer-mass-controls">
+					<legend>{{localize "FOUNDRYSHOP.Layers.Workspace"}}</legend>
+					<button type="button" data-action="showWorkspaceAll" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.ShowAll"}}</button>
+					<button type="button" data-action="hideWorkspaceAll" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.HideAll"}}</button>
+				</fieldset>
+				<fieldset class="fshop-layer-mass-controls">
+					<legend>{{localize "FOUNDRYSHOP.Layers.Players"}}</legend>
+					<button type="button" data-action="showPlayersAll" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.ShowAll"}}</button>
+					<button type="button" data-action="hidePlayersAll" data-id="{{id}}">{{localize "FOUNDRYSHOP.Layers.HideAll"}}</button>
+				</fieldset>
+				{{/if}}
+				<button type="button" data-action="move" data-id="{{id}}"><i class="fas fa-folder-tree" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Move"}}</button>
+				<button type="button" class="fshop-layer-danger" data-action="deleteNode" data-id="{{id}}" {{#if effectiveLocked}}disabled{{/if}}><i class="fas fa-trash" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Delete"}}</button>
+				</div>
+			</div>
+			{{/if}}
+		</div>
+		{{else}}
+		<p>{{localize "FOUNDRYSHOP.Layers.Empty"}}</p>
+		{{/each}}
+	</div>
+	<div class="fshop-layer-unassigned">
+		<span>{{localize "FOUNDRYSHOP.Layers.Unassigned"}} ({{unassignedCount}})</span>
+		<button type="button" data-action="assign" data-id="{{unassigned}}">{{localize "FOUNDRYSHOP.Layers.Unassign"}}</button>
+		<p class="fshop-layer-hint" data-help>{{localize "FOUNDRYSHOP.Layers.UnassignedHint"}}</p>
+	</div>
+	<footer class="fshop-layer-background">
+		<strong><i class="fas fa-lock" aria-hidden="true"></i> {{localize "FOUNDRYSHOP.Layers.Background"}}</strong>
+		<span>{{background}}</span>
+	</footer>
+	{{/if}}
+</section>
