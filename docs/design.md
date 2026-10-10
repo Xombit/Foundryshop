@@ -608,6 +608,28 @@ Exact selection-to-layer copying (2026-10-10):
   workspace, toolbox state and paused state restored. The owner approved
   committing and pushing this tested addition to the fork; no release or tag.
 
+LAN HTTP copy correction (2026-10-10):
+
+- The owner's LAN HTTP origin does not provide `crypto.subtle`; localhost
+  acceptance had missed that difference. Existing-artwork fingerprinting now
+  uses Web Crypto when available and pinned, MIT-licensed vendored
+  `@noble/hashes` SHA-256 otherwise. Journal formats and baseline hashes are
+  unchanged; native digest failures still propagate rather than bypassing
+  verification. This covers copies, stamp placement, project import and their
+  existing-artwork recovery, not unrelated Library/Bake file verification.
+- All 1287 tests pass, including matching native/fallback hashes across SHA-256
+  padding boundaries, UTF-8, missing crypto, native failure propagation, LAN
+  copy success and interrupted-copy compensation with unchanged source.
+- Native v14 acceptance simulated LAN capabilities on localhost by removing
+  `subtle` while retaining native `getRandomValues`. The actual destination
+  layer button copied rotated artwork to a hidden layer with exact native
+  artwork, unchanged source/active layer and no journal. Revealing the layer
+  produced identical rendered shape bounds. This is a missing-Web-Crypto
+  simulation, not a test on the owner's LAN server. Disposable Scene removed
+  and original Scene/workspace and browser crypto restored.
+- The 1.0.0-copy2 owner-test candidate includes the fallback and its license.
+  Owner physical pen/live-play acceptance and release approval remain open.
+
 #### Native Walls expansion: compatible architecture now, explicit tools later
 
 The future workflow converts selected supported Drawing geometry or an editable

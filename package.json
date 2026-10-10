@@ -13,6 +13,7 @@
     "pack-win": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\pack.ps1"
   },
   "devDependencies": {
+    "@noble/hashes": "1.8.0",
     "fflate": "0.8.3"
   }
 }

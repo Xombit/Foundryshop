@@ -32,6 +32,9 @@ built for GMs who draw maps live at the table. This first release includes:
   duplication for seamless reveal overlaps, including hidden destinations.
   Originals stay unchanged; complete retained paths receive independent
   identities, with explicit partial/damaged-path editability warnings.
+- Layer copies, stamps and project-import recovery fingerprints work over
+  LAN HTTP without Web Crypto, using equivalent SHA-256 rather than weakening
+  existing-artwork protection.
 
 ### Presentation
 - **Presentation presets** that snapshot which layers players can see, so a

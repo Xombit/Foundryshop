@@ -639,7 +639,7 @@ In **Game Settings → Configure Settings → Foundryshop**:
 
 | Problem | Fix |
 |---|---|
-| Thumbnails fail with "renderer unavailable" on an HTTP server | Update Foundryshop: thumbnail cache identity no longer requires HTTPS. Use HTTPS for the full workflow; project-library file verification and imports into Scenes with existing drawings still require browser Web Crypto. |
+| Thumbnails fail with "renderer unavailable" on an HTTP server | Update Foundryshop: thumbnail cache identity no longer requires HTTPS. Layer copies, stamps and project imports use equivalent SHA-256 fingerprints on LAN HTTP as well as HTTPS. Project-library file verification and Bake/recovery file workflows still require browser Web Crypto; use HTTPS for the full workflow. |
 | The toolbox does not appear | You must be a GM. Select the Drawing layer, or use the toolbox button in the Drawing controls. Check *Show Drawing Toolbox Automatically*. |
 | "Open an active Scene" in the Layers panel | Layers need a viewed Scene. View a Scene and the panel fills in again. |
 | New drawings appear in *Unassigned* | Make a layer active by clicking its name. Locked layers cannot be active. |
@@ -667,6 +667,10 @@ module by **shemetz**.
 
 All textures, starter shapes, example projects and starter labels are original
 works created for Foundryshop and are distributed under the same license.
+
+Browser-independent import/copy fingerprints use the MIT-licensed
+[@noble/hashes](https://github.com/paulmillr/noble-hashes) SHA-256 implementation
+when Web Crypto is unavailable. Its license ships with the module.
 
 ## License
 

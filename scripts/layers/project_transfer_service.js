@@ -14,6 +14,7 @@ import { exportPortablePaths, filterPortablePaths, remapPortablePaths } from '..
 import { readPathRegistry } from '../path_store.js';
 import { validatePathRegistry } from '../path_schema.js';
 import { clearPathHistory } from '../path_history.js';
+import { sha256Hex } from '../sha256.js';
 
 const same = (a, b) => canonicalJson(a) === canonicalJson(b);
 const journalPath = `flags.${MODULE}.projectImportJournal`;
@@ -318,10 +319,8 @@ function verifyTree(scene, expected) {
 }
 
 async function drawingDigest(data) {
-	if (!globalThis.crypto?.subtle) throw new Error(game.i18n.localize('FOUNDRYSHOP.Project.DigestUnavailable'));
 	const bytes = new TextEncoder().encode(canonicalJson(data));
-	const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
-	return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+	return sha256Hex(bytes);
 }
 
 async function verifyExistingDrawings(scene, baseline, allowedIds = [], allowReordered = false) {

@@ -815,7 +815,6 @@
 	"FOUNDRYSHOP.Layers.Title": "Foundryshop Layers",
 	"FOUNDRYSHOP.Project.Export": "Export Project JSON",
 	"FOUNDRYSHOP.Project.ImportMode": "Import mode",
-	"FOUNDRYSHOP.Project.DigestUnavailable": "Import protection for existing artwork requires browser SHA-256 support. Open Foundry through HTTPS or localhost, then retry.",
 	"FOUNDRYSHOP.Project.EmptyMode": "Empty Drawing project (no existing Drawings; confirm retained layer/preset replacement)",
 	"FOUNDRYSHOP.Project.ReplaceEmptyMetadata": "Replace retained layers and presets?",
 	"FOUNDRYSHOP.Project.ReplaceEmptyMetadataHint": "This Scene has no Drawings but retains {nodes} layers/groups and {presets} presets. Import will replace that metadata with the imported project in a player-hidden group. Tokens, Walls, backgrounds and other Scene content remain unchanged. Cancel to preserve the retained metadata, or choose additive mode instead. Proceed to preview?",

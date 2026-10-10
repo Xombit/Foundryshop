@@ -221,6 +221,27 @@ test('in-place partial path approval refuses stale source edits before writing a
 	assert.equal(scene.drawings.size,count);assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
 });
 
+test('LAN HTTP layer copy and cleanup retain identical SHA-256 baselines without browser subtle crypto',async()=>{
+	const descriptor=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+	try{
+		Object.defineProperty(globalThis,'crypto',{configurable:true,value:{}});
+		copyDestination();scene.drawings.set('originalDrawing',new Drawing(base(),{parent:scene}));
+		const before=scene.drawings.get('originalDrawing').toObject();
+		const plan=await copyDrawingsToLayer(scene,['originalDrawing'],'reveal');
+		assert.equal(scene.drawings.size,2);
+		assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
+		assert.equal(scene.drawings.get(plan.data[0]._id).toObject().x,before.x);
+		const create=scene.createEmbeddedDocuments;
+		scene.createEmbeddedDocuments=async(...args)=>{await create(...args);throw Error('LAN copy interrupted');};
+		await assert.rejects(copyDrawingsToLayer(scene,['originalDrawing'],'reveal'),/LAN copy interrupted/);
+		assert.equal(scene.drawings.size,2);
+		assert.equal(scene.getFlag('foundryshop','projectImportJournal'),undefined);
+		assert.deepEqual(scene.drawings.get('originalDrawing').toObject(),before);
+	}finally{
+		if(descriptor)Object.defineProperty(globalThis,'crypto',descriptor);else delete globalThis.crypto;
+	}
+});
+
 function enablePathNativeHooks() {
 	const update = scene.update, create = scene.createEmbeddedDocuments, replace = scene.updateEmbeddedDocuments,
 		remove = scene.deleteEmbeddedDocuments;
